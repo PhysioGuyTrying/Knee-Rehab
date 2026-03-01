@@ -1265,27 +1265,38 @@ const CONFIG = {
       ]
     },
     3: {
-      name: "Week 3",
+      name: "Week 3 — Functional Movement",
       exercises: [
-        { id: "w3e1", name: "Coming soon", video: "" },
+        { id: "w3e1", name: "Standing Knee Flexion", video: "videos/068-78-Standing_Knee_Flexion-L_4-2.mp4" },
+        { id: "w3e2", name: "Standing Heel Raises", video: "videos/085_99-Bilateral_Calf_Raises_No_Support-L_6-2.mp4" },
+        { id: "w3e3", name: "Standing Hip Extension", video: "videos/087-101-Standing_Hip_Extension__no_toe_down_between-L_6-2.mp4" },
+        { id: "w3e4", name: "Standing Hip Abduction", video: "videos/062-70-Supported_Hip_Abduction-L_4-1.mp4" }
       ]
     },
     4: {
-      name: "Week 4",
+      name: "Week 4 — Balance & Resistance",
       exercises: [
-        { id: "w4e1", name: "Coming soon", video: "" },
+        { id: "w4e1", name: "Marching No Support", video: "videos/083-96-Marching_without_hands-L_6-2_.mp4" },
+        { id: "w4e2", name: "Single Leg Stance No Support", video: "videos/084_97-Single_Leg_Stand_No_Support_-L_6-1.mp4" },
+        { id: "w4e3", name: "Standing Hip Abduction with Resistance Band", video: "videos/088-102-Hip_Abduction_with_Band-M_1-2.mp4" },
+        { id: "w4e4", name: "Standing Hip Extension with Resistance Band", video: "videos/089-103-Hip_Extension_with_Band-M_1-2.mp4" }
       ]
     },
     5: {
-      name: "Week 5",
+      name: "Week 5 — Power & Control",
       exercises: [
-        { id: "w5e1", name: "Coming soon", video: "" },
+        { id: "w5e1", name: "One Leg Heel Raise", video: "videos/101_-_115_One_Leg_Heel_Raise_M1-6.mp4" },
+        { id: "w5e2", name: "Side Step with Resistance Band", video: "videos/108_-_Take_122_Sidestep_with_Band_M1-8.mp4" },
+        { id: "w5e3", name: "Standing Hip Diagonal Abduction with Theraband", video: "videos/120_-_Diagonal_Hip_Abduction_with_Band_M1-12.mp4" },
+        { id: "w5e4", name: "Sit to Stand No Hands", video: "videos/093_-_107_Sit_to_Stand_No_Hands_M1-3__1_.mp4" }
       ]
     },
     6: {
-      name: "Week 6",
+      name: "Week 6 — Advanced Strengthening",
       exercises: [
-        { id: "w6e1", name: "Coming soon", video: "" },
+        { id: "w6e1", name: "Single Leg Hip Hinge", video: "videos/117_-_747_with_Support_M1-12.mp4" },
+        { id: "w6e2", name: "Forward Step Ups", video: "videos/110_-_Take_124_Forward_Step_Ups_M1-9.mp4" },
+        { id: "w6e3", name: "Side Step Ups", video: "videos/111_-_Take_125_Side_Step_Ups_M_1-11.mp4" }
       ]
     }
   },
@@ -1762,7 +1773,7 @@ function closeResult() {
 
 // ─── Data Collection (Google Sheets Backend) ───
 // REPLACE THIS URL with your Google Apps Script web app URL
-const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyfxYaGJieExtXh7XtR-v4yKxVzJZfH4_02q5R7pU93Uhwg8_3nuxBm-LrqWFFcJ2lTcg/exec";
+const SHEETS_ENDPOINT = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
 function getUserId() {
   let uid = localStorage.getItem('kneeRehabUserId');
