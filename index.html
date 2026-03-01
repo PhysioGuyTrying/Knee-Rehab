@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a2f3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>Knee Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f4f1eb;
+  --bg-card: #ffffff;
+  --text: #1a2f3a;
+  --text-muted: #6b7f8a;
+  --accent: #2d8a6e;
+  --accent-light: #e8f5ef;
+  --accent-dark: #1e6b53;
+  --warm: #e8a04c;
+  --warm-light: #fef3e2;
+  --danger: #c45c5c;
+  --danger-light: #fde8e8;
+  --border: #e2ddd5;
+  --radius: 16px;
+  --shadow: 0 2px 12px rgba(26,47,58,0.06);
+  --shadow-lg: 0 8px 32px rgba(26,47,58,0.10);
+}
+
+html, body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── App Shell ─── */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+.header {
+  padding: 24px 20px 16px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.header-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─── Progress Bar ─── */
+.progress-section {
+  padding: 16px 20px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.progress-label strong {
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Week Indicator ─── */
+.week-chips {
+  display: flex;
+  gap: 6px;
+  padding: 0 20px 16px;
+  overflow-x: auto;
+}
+
+.week-chip {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: default;
+  transition: all 0.3s;
+}
+
+.week-chip.completed {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.week-chip.current {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.week-chip.locked {
+  opacity: 0.4;
+}
+
+/* ─── Day Cards ─── */
+.content {
+  padding: 0 20px;
+}
+
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 20px 0 14px;
+}
+
+.day-grid {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.day-btn {
+  flex: 1;
+  min-width: 42px;
+  padding: 10px 0;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.day-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.day-btn.done {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.day-btn.done::after {
+  content: ' ✓';
+  font-size: 11px;
+}
+
+/* ─── Exercise Cards ─── */
+.exercise-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.exercise-card:active {
+  transform: scale(0.98);
+}
+
+.exercise-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #1a2f3a;
+  display: block;
+}
+
+.exercise-info {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exercise-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.exercise-number {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.check-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.check-btn.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.check-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--border);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s;
+}
+
+.check-btn.checked svg {
+  stroke: white;
+}
+
+/* ─── Assessment Modal ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,47,58,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.modal p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.question-block {
+  margin-bottom: 18px;
+}
+
+.question-text {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.answer-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.answer-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.answer-btn:hover {
+  border-color: var(--text-muted);
+}
+
+.answer-btn.selected-yes {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.answer-btn.selected-no {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.submit-assessment {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.submit-assessment:hover {
+  background: var(--accent-dark);
+}
+
+.submit-assessment:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Result Modal ─── */
+.result-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 28px;
+}
+
+.result-icon.advance {
+  background: var(--accent-light);
+}
+
+.result-icon.repeat {
+  background: var(--warm-light);
+}
+
+.result-message {
+  text-align: center;
+}
+
+.result-message h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.result-message p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.result-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ─── Assessment Prompt Banner ─── */
+.assessment-banner {
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--warm-light);
+  border: 2px solid var(--warm);
+  border-radius: var(--radius);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.assessment-banner:active {
+  transform: scale(0.98);
+}
+
+.assessment-banner h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.assessment-banner p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ─── Completion Screen ─── */
+.completion-screen {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.completion-screen .result-icon {
+  width: 80px;
+  height: 80px;
+  font-size: 36px;
+  background: var(--accent-light);
+}
+
+.completion-screen h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.completion-screen p {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ─── Empty State ─── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  stroke: var(--border);
+}
+
+/* ─── Reset button ─── */
+.reset-section {
+  padding: 40px 20px 20px;
+  text-align: center;
+}
+
+.reset-btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- Header -->
+  <div class="header">
+    <h1>Knee Recovery</h1>
+    <div class="header-sub" id="headerSub">Week 1 of 6</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-label">
+      <span>Overall Progress</span>
+      <strong id="progressPct">0%</strong>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Week Chips -->
+  <div class="week-chips" id="weekChips"></div>
+
+  <!-- Main Content -->
+  <div class="content" id="mainContent"></div>
+
+  <!-- Reset -->
+  <div class="reset-section">
+    <button class="reset-btn" onclick="resetApp()">Reset All Progress</button>
+  </div>
+</div>
+
+<!-- Assessment Modal -->
+<div class="modal-overlay" id="assessmentModal">
+  <div class="modal">
+    <h2>Weekly Check-in</h2>
+    <p>Answer these questions to determine if you're ready to progress.</p>
+    <div id="assessmentQuestions"></div>
+    <button class="submit-assessment" id="submitAssessment" onclick="submitAssessment()" disabled>Submit Assessment</button>
+  </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="result-message" id="resultMessage"></div>
+  </div>
+</div>
+
+<script>
+// ─── Configuration ───
+const CONFIG = {
+  totalWeeks: 6,
+  daysPerWeek: 7,
+  weeks: {
+    1: {
+      name: "Week 1 — Foundation",
+      exercises: [
+        { id: "w1e1", name: "Static Quads", video: "videos/001-04-Isometric_Quads_L_1-1.mp4" },
+        { id: "w1e2", name: "Static Hamstrings", video: "videos/002-05-Static_Hamstrings_L_1-1.mp4" },
+        { id: "w1e3", name: "Static Glutes", video: "videos/003-06-Isometric_Glutes_L_1-1.mp4" }
+      ]
+    },
+    2: {
+      name: "Week 2",
+      exercises: [
+        { id: "w2e1", name: "Coming soon", video: "" },
+      ]
+    },
+    3: {
+      name: "Week 3",
+      exercises: [
+        { id: "w3e1", name: "Coming soon", video: "" },
+      ]
+    },
+    4: {
+      name: "Week 4",
+      exercises: [
+        { id: "w4e1", name: "Coming soon", video: "" },
+      ]
+    },
+    5: {
+      name: "Week 5",
+      exercises: [
+        { id: "w5e1", name: "Coming soon", video: "" },
+      ]
+    },
+    6: {
+      name: "Week 6",
+      exercises: [
+        { id: "w6e1", name: "Coming soon", video: "" },
+      ]
+    }
+  },
+  assessmentQuestions: [
+    { text: "Were you able to do the exercises without any knee pain?", advanceOn: "yes" },
+    { text: "Did you notice if your knee pain was worse this week as a result of the exercises?", advanceOn: "no" },
+    { text: "Have you noticed any additional swelling in your knee as a result of the exercises?", advanceOn: "no" },
+    { text: "Do you feel like you can progress to some more slightly difficult exercises for the next week?", advanceOn: "yes" }
+  ]
+};
+
+// ─── State ───
+let state = loadState();
+
+function getDefaultState() {
+  return {
+    currentWeek: 1,
+    selectedDay: 1,
+    completions: {},    // { "w1d1": { exercises: ["w1e1","w1e2"], completedAt: "..." } }
+    assessments: {},    // { 1: { passed: true, answers: [...], date: "..." } }
+    weekStartDates: { 1: new Date().toISOString() }
+  };
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('kneeRehabState');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return getDefaultState();
+}
+
+function saveState() {
+  localStorage.setItem('kneeRehabState', JSON.stringify(state));
+}
+
+function resetApp() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    state = getDefaultState();
+    saveState();
+    render();
+  }
+}
+
+// ─── Helpers ───
+function getDayKey(week, day) { return `w${week}d${day}`; }
+
+function isDayCompleted(week, day) {
+  const key = getDayKey(week, day);
+  const weekExercises = CONFIG.weeks[week]?.exercises || [];
+  const comp = state.completions[key];
+  if (!comp) return false;
+  return weekExercises.every(ex => comp.exercises.includes(ex.id));
+}
+
+function isExerciseCompleted(week, day, exerciseId) {
+  const key = getDayKey(week, day);
+  const comp = state.completions[key];
+  return comp && comp.exercises.includes(exerciseId);
+}
+
+function toggleExercise(week, day, exerciseId) {
+  const key = getDayKey(week, day);
+  if (!state.completions[key]) {
+    state.completions[key] = { exercises: [], completedAt: null };
+  }
+  const idx = state.completions[key].exercises.indexOf(exerciseId);
+  if (idx >= 0) {
+    state.completions[key].exercises.splice(idx, 1);
+    state.completions[key].completedAt = null;
+  } else {
+    state.completions[key].exercises.push(exerciseId);
+    // Check if all exercises are done
+    const weekExercises = CONFIG.weeks[week]?.exercises || [];
+    if (weekExercises.every(ex => state.completions[key].exercises.includes(ex.id))) {
+      state.completions[key].completedAt = new Date().toISOString();
+    }
+  }
+  saveState();
+  render();
+}
+
+function getCompletedDaysInWeek(week) {
+  let count = 0;
+  for (let d = 1; d <= CONFIG.daysPerWeek; d++) {
+    if (isDayCompleted(week, d)) count++;
+  }
+  return count;
+}
+
+function isWeekFullyCompleted(week) {
+  return getCompletedDaysInWeek(week) >= CONFIG.daysPerWeek;
+}
+
+function canTakeAssessment(week) {
+  return isWeekFullyCompleted(week) && !state.assessments[week];
+}
+
+function getOverallProgress() {
+  let totalDays = CONFIG.totalWeeks * CONFIG.daysPerWeek;
+  let completedDays = 0;
+  for (let w = 1; w <= CONFIG.totalWeeks; w++) {
+    completedDays += getCompletedDaysInWeek(w);
+  }
+  return Math.round((completedDays / totalDays) * 100);
+}
+
+function isProgramComplete() {
+  return state.currentWeek > CONFIG.totalWeeks ||
+    (state.currentWeek === CONFIG.totalWeeks && state.assessments[CONFIG.totalWeeks]?.passed);
+}
+
+// ─── Render ───
+function render() {
+  renderProgress();
+  renderWeekChips();
+  renderContent();
+}
+
+function renderProgress() {
+  const pct = getOverallProgress();
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  
+  if (isProgramComplete()) {
+    document.getElementById('headerSub').textContent = 'Program Complete!';
+  } else {
+    document.getElementById('headerSub').textContent = `Week ${state.currentWeek} of ${CONFIG.totalWeeks}`;
+  }
+}
+
+function renderWeekChips() {
+  const container = document.getElementById('weekChips');
+  container.innerHTML = '';
+  
+  for (let w = 1; w <= CONFIG.totalWeeks; w++) {
+    const chip = document.createElement('div');
+    chip.className = 'week-chip';
+    chip.textContent = `Wk ${w}`;
+    
+    if (state.assessments[w]?.passed) {
+      chip.classList.add('completed');
+    } else if (w === state.currentWeek) {
+      chip.classList.add('current');
+    } else if (w > state.currentWeek) {
+      chip.classList.add('locked');
+    }
+    
+    container.appendChild(chip);
+  }
+}
+
+function renderContent() {
+  const container = document.getElementById('mainContent');
+  
+  if (isProgramComplete()) {
+    container.innerHTML = `
+      <div class="completion-screen">
+        <div class="result-icon advance">🎉</div>
+        <h2>Congratulations!</h2>
+        <p>You've completed the full 6-week knee recovery program. Keep up the great work and continue listening to your body.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const week = state.currentWeek;
+  const weekData = CONFIG.weeks[week];
+  
+  if (!weekData) {
+    container.innerHTML = '<div class="empty-state"><p>No exercises configured for this week.</p></div>';
+    return;
+  }
+  
+  let html = '';
+  
+  // Section title
+  html += `<div class="section-title">${weekData.name}</div>`;
+  
+  // Day selector
+  html += '<div class="day-grid">';
+  for (let d = 1; d <= CONFIG.daysPerWeek; d++) {
+    const done = isDayCompleted(week, d);
+    const active = d === state.selectedDay;
+    let cls = 'day-btn';
+    if (done) cls += ' done';
+    else if (active) cls += ' active';
+    html += `<button class="${cls}" onclick="selectDay(${d})">D${d}</button>`;
+  }
+  html += '</div>';
+  
+  // Assessment banner
+  if (canTakeAssessment(week)) {
+    html += `
+      <div class="assessment-banner" onclick="openAssessment()">
+        <h3>🎯 Week Complete!</h3>
+        <p>Take your weekly check-in to see if you can advance.</p>
+      </div>
+    `;
+  }
+  
+  // Exercises
+  const exercises = weekData.exercises;
+  exercises.forEach((ex, i) => {
+    const checked = isExerciseCompleted(week, state.selectedDay, ex.id);
+    html += `
+      <div class="exercise-card">
+        ${ex.video ? `<video class="exercise-video" src="${ex.video}" controls playsinline preload="metadata"></video>` : ''}
+        <div class="exercise-info">
+          <div>
+            <div class="exercise-name">${ex.name}</div>
+            <div class="exercise-number">Exercise ${i + 1} of ${exercises.length}</div>
+          </div>
+          <button class="check-btn ${checked ? 'checked' : ''}" onclick="toggleExercise(${week}, ${state.selectedDay}, '${ex.id}')">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function selectDay(d) {
+  state.selectedDay = d;
+  saveState();
+  render();
+}
+
+// ─── Assessment ───
+let assessmentAnswers = {};
+
+function openAssessment() {
+  assessmentAnswers = {};
+  const container = document.getElementById('assessmentQuestions');
+  
+  let html = '';
+  CONFIG.assessmentQuestions.forEach((q, i) => {
+    html += `
+      <div class="question-block">
+        <div class="question-text">${i + 1}. ${q.text}</div>
+        <div class="answer-btns">
+          <button class="answer-btn" id="q${i}-yes" onclick="answerQuestion(${i}, 'yes')">Yes</button>
+          <button class="answer-btn" id="q${i}-no" onclick="answerQuestion(${i}, 'no')">No</button>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  
+  document.getElementById('submitAssessment').disabled = true;
+  document.getElementById('assessmentModal').classList.add('show');
+}
+
+function answerQuestion(index, answer) {
+  assessmentAnswers[index] = answer;
+  
+  // Update button styles
+  const yesBtn = document.getElementById(`q${index}-yes`);
+  const noBtn = document.getElementById(`q${index}-no`);
+  yesBtn.className = 'answer-btn' + (answer === 'yes' ? ' selected-yes' : '');
+  noBtn.className = 'answer-btn' + (answer === 'no' ? ' selected-no' : '');
+  
+  // Enable submit if all answered
+  const allAnswered = CONFIG.assessmentQuestions.every((_, i) => assessmentAnswers[i] !== undefined);
+  document.getElementById('submitAssessment').disabled = !allAnswered;
+}
+
+function submitAssessment() {
+  const week = state.currentWeek;
+  
+  // Check if all answers match advanceOn criteria
+  const passed = CONFIG.assessmentQuestions.every((q, i) => {
+    return assessmentAnswers[i] === q.advanceOn;
+  });
+  
+  state.assessments[week] = {
+    passed: passed,
+    answers: { ...assessmentAnswers },
+    date: new Date().toISOString()
+  };
+  
+  if (passed && state.currentWeek < CONFIG.totalWeeks) {
+    state.currentWeek += 1;
+    state.selectedDay = 1;
+    state.weekStartDates[state.currentWeek] = new Date().toISOString();
+  } else if (passed && state.currentWeek === CONFIG.totalWeeks) {
+    // Program complete!
+  } else {
+    // Repeat week: reset completions for this week
+    for (let d = 1; d <= CONFIG.daysPerWeek; d++) {
+      delete state.completions[getDayKey(week, d)];
+    }
+    delete state.assessments[week];
+  }
+  
+  saveState();
+  document.getElementById('assessmentModal').classList.remove('show');
+  
+  // Show result
+  showResult(passed, week);
+}
+
+function showResult(passed, week) {
+  const container = document.getElementById('resultMessage');
+  
+  if (passed && week === CONFIG.totalWeeks) {
+    container.innerHTML = `
+      <div class="result-icon advance">🎉</div>
+      <h3>Program Complete!</h3>
+      <p>Congratulations! You've successfully completed the entire 6-week knee recovery program.</p>
+      <button class="result-btn" onclick="closeResult()">Finish</button>
+    `;
+  } else if (passed) {
+    container.innerHTML = `
+      <div class="result-icon advance">🎉</div>
+      <h3>Great Progress!</h3>
+      <p>You're ready to move on to Week ${week + 1} with more challenging exercises.</p>
+      <button class="result-btn" onclick="closeResult()">Continue to Week ${week + 1}</button>
+    `;
+  } else {
+    container.innerHTML = `
+      <div class="result-icon repeat">💪</div>
+      <h3>Let's Keep Building</h3>
+      <p>Based on your answers, it's best to repeat Week ${week} to ensure a safe recovery. Listen to your body — there's no rush!</p>
+      <button class="result-btn" onclick="closeResult()">Repeat Week ${week}</button>
+    `;
+  }
+  
+  document.getElementById('resultModal').classList.add('show');
+}
+
+function closeResult() {
+  document.getElementById('resultModal').classList.remove('show');
+  render();
+}
+
+// ─── Notifications ───
+async function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+// ─── PWA Registration ───
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ─── Init ───
+requestNotificationPermission();
+render();
+</script>
+</body>
+</html>

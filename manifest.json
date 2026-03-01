@@ -1,0 +1,22 @@
+{
+  "name": "Knee Recovery",
+  "short_name": "KneeRehab",
+  "description": "A 6-week progressive knee rehabilitation exercise program",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f4f1eb",
+  "theme_color": "#1a2f3a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
