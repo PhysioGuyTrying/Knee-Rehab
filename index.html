@@ -1183,6 +1183,11 @@ html, body {
       </div>
     </div>
 
+    <div class="instructions-section">
+      <h2><span class="section-icon">🔒</span> Your Privacy</h2>
+      <p>This app collects anonymized, non-identifiable data (such as age range, pain scores, and exercise completion rates) to help improve the program. No personal information such as your name or contact details is ever transmitted. All identifiable data stays on your device only. By using this app, you acknowledge this data collection.</p>
+    </div>
+
     <button class="welcome-start-btn" id="welcomeStartBtn" onclick="dismissWelcome()">Get Started</button>
   </div>
 </div>
@@ -1323,6 +1328,7 @@ function resetApp() {
     saveState();
     localStorage.removeItem('kneeRehabWelcomeSeen');
     localStorage.removeItem('kneeRehabIntake');
+    localStorage.removeItem('kneeRehabUserId');
     render();
     checkFirstLaunch();
   }
@@ -1370,6 +1376,9 @@ function toggleExercise(week, day, exerciseId) {
   // Show congratulatory toast if day just became complete
   const isNowDone = isDayCompleted(week, day);
   if (!wasDone && isNowDone) {
+    // Send completion data to Google Sheets
+    const weekExercises = CONFIG.weeks[week]?.exercises || [];
+    sendCompletionData(week, day, weekExercises.length, weekExercises.length);
     showDayToast(week, day);
   }
 }
@@ -1693,6 +1702,9 @@ function submitAssessment() {
   
   state.assessments[week] = assessmentData;
   
+  // Send anonymized data to Google Sheets
+  sendAssessmentData(week, assessmentData);
+  
   if (passed && state.currentWeek < CONFIG.totalWeeks) {
     state.currentWeek += 1;
     state.selectedDay = 1;
@@ -1746,6 +1758,80 @@ function showResult(passed, week) {
 function closeResult() {
   document.getElementById('resultModal').classList.remove('show');
   render();
+}
+
+// ─── Data Collection (Google Sheets Backend) ───
+// REPLACE THIS URL with your Google Apps Script web app URL
+const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyfxYaGJieExtXh7XtR-v4yKxVzJZfH4_02q5R7pU93Uhwg8_3nuxBm-LrqWFFcJ2lTcg/exec";
+
+function getUserId() {
+  let uid = localStorage.getItem('kneeRehabUserId');
+  if (!uid) {
+    uid = 'user_' + Math.random().toString(36).substr(2, 8);
+    localStorage.setItem('kneeRehabUserId', uid);
+  }
+  return uid;
+}
+
+function getAgeRange(age) {
+  age = parseInt(age);
+  if (!age || age < 1) return 'unknown';
+  if (age < 20) return 'under 20';
+  if (age < 30) return '20-29';
+  if (age < 40) return '30-39';
+  if (age < 50) return '40-49';
+  if (age < 60) return '50-59';
+  if (age < 70) return '60-69';
+  if (age < 80) return '70-79';
+  return '80+';
+}
+
+function sendToSheets(data) {
+  if (SHEETS_ENDPOINT === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return; // Not configured yet
+  
+  try {
+    fetch(SHEETS_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(() => {}); // Silently fail - don't disrupt the user experience
+  } catch(e) {}
+}
+
+function sendIntakeData(intakeData) {
+  sendToSheets({
+    type: 'intake',
+    userId: getUserId(),
+    ageRange: getAgeRange(intakeData.age),
+    vas: intakeData.vasPain,
+    lefsTotal: intakeData.lefsTotal,
+    painDuration: intakeData.painDuration
+  });
+}
+
+function sendAssessmentData(week, assessmentData) {
+  sendToSheets({
+    type: 'weekly_assessment',
+    userId: getUserId(),
+    week: week,
+    vas: assessmentData.vas,
+    lefsTotal: assessmentData.lefsTotal || null,
+    answers: assessmentData.answers,
+    passed: assessmentData.passed
+  });
+}
+
+function sendCompletionData(week, day, exercisesCompleted, totalExercises) {
+  sendToSheets({
+    type: 'completion',
+    userId: getUserId(),
+    week: week,
+    day: day,
+    exercisesCompleted: exercisesCompleted,
+    totalExercises: totalExercises,
+    completionRate: Math.round((exercisesCompleted / totalExercises) * 100) + '%'
+  });
 }
 
 // ─── Intake Questionnaire ───
@@ -1881,6 +1967,10 @@ function submitIntake() {
   };
   
   localStorage.setItem('kneeRehabIntake', JSON.stringify(intakeData));
+  
+  // Send anonymized data to Google Sheets
+  sendIntakeData(intakeData);
+  
   document.getElementById('intakeOverlay').classList.remove('show');
 }
 
