@@ -5,9 +5,9 @@ const ASSETS = [
   '/videos/001-04-Isometric_Quads_L_1-1.mp4',
   '/videos/002-05-Static_Hamstrings_L_1-1.mp4',
   '/videos/003-06-Isometric_Glutes_L_1-1.mp4',
-  '/videos/008-13-Clamshells-L_1-2.mp4',
-  '/videos/013-19-Side_Lying_Hip_Abduction-L_2-1.mp4',
-  '/videos/021-27-SLR_with_Hip_Abduction-M_1-4.mp4'
+  '/videos/008-13-Clamshells-L 1-2.mp4',
+  '/videos/013-19-Side Lying Hip Abduction-L 2-1.mp4',
+  '/videos/021-27-SLR with Hip Abduction-M 1-4.mp4'
 ];
 
 self.addEventListener('install', event => {
