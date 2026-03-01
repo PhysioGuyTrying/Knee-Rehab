@@ -676,6 +676,271 @@ html, body {
   margin-left: auto;
 }
 
+/* ─── Intake Questionnaire ─── */
+.intake-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 1500;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.intake-overlay.show { display: block; }
+
+.intake-content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+}
+
+.intake-step-indicator {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.intake-step-dot {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+
+.intake-step-dot.active { background: var(--accent); }
+.intake-step-dot.done { background: var(--accent-dark); }
+
+.intake-step { display: none; }
+.intake-step.active { display: block; }
+
+.intake-step h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.intake-step > p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-group { flex: 1; }
+
+/* ─── VAS Pain Slider ─── */
+.vas-container {
+  margin: 12px 0 6px;
+}
+
+.vas-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.vas-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--warm) 50%, var(--danger) 100%);
+  outline: none;
+}
+
+.vas-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 3px solid var(--accent);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.vas-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 3px solid var(--accent);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.vas-value {
+  text-align: center;
+  font-size: 32px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 8px;
+}
+
+.vas-description {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─── LEFS ─── */
+.lefs-intro {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--accent-light);
+  border-radius: 10px;
+}
+
+.lefs-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.lefs-item-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.lefs-item-num {
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.lefs-options {
+  display: flex;
+  gap: 6px;
+}
+
+.lefs-opt {
+  flex: 1;
+  padding: 8px 4px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+
+.lefs-opt.selected {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.intake-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.intake-nav button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.intake-back {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+}
+
+.intake-next {
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  color: white;
+}
+
+.intake-next:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lefs-score-display {
+  text-align: center;
+  padding: 16px;
+  background: var(--accent-light);
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+.lefs-score-display .score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.lefs-score-display .score-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 .header-row {
   display: flex;
   align-items: center;
@@ -717,6 +982,108 @@ html, body {
   <!-- Reset -->
   <div class="reset-section">
     <button class="reset-btn" onclick="resetApp()">Reset All Progress</button>
+  </div>
+</div>
+
+<!-- Intake Questionnaire Overlay -->
+<div class="intake-overlay" id="intakeOverlay">
+  <div class="intake-content">
+    <div class="intake-step-indicator">
+      <div class="intake-step-dot" id="dot0"></div>
+      <div class="intake-step-dot" id="dot1"></div>
+      <div class="intake-step-dot" id="dot2"></div>
+    </div>
+
+    <!-- Step 1: Personal Information -->
+    <div class="intake-step" id="intakeStep0">
+      <h2>About You</h2>
+      <p>Please provide some basic information so we can personalise your experience.</p>
+
+      <div class="form-group">
+        <label for="intakeName">Name</label>
+        <input type="text" id="intakeName" placeholder="Your first name">
+      </div>
+
+      <div class="form-group">
+        <label for="intakeAge">Age</label>
+        <input type="number" id="intakeAge" placeholder="e.g. 45" min="1" max="120">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="intakeHeight">Height (cm)</label>
+          <input type="number" id="intakeHeight" placeholder="e.g. 170" min="50" max="250">
+        </div>
+        <div class="form-group">
+          <label for="intakeWeight">Weight (kg)</label>
+          <input type="number" id="intakeWeight" placeholder="e.g. 75" min="20" max="300">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="intakeDuration">How long have you had knee pain?</label>
+        <select id="intakeDuration">
+          <option value="" disabled selected>Select duration</option>
+          <option value="less_than_1_week">Less than 1 week</option>
+          <option value="1_4_weeks">1–4 weeks</option>
+          <option value="1_3_months">1–3 months</option>
+          <option value="3_6_months">3–6 months</option>
+          <option value="6_12_months">6–12 months</option>
+          <option value="1_2_years">1–2 years</option>
+          <option value="more_than_2_years">More than 2 years</option>
+        </select>
+      </div>
+
+      <div class="intake-nav">
+        <button class="intake-next" onclick="intakeNext()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Pain Level (VAS) -->
+    <div class="intake-step" id="intakeStep1">
+      <h2>Your Pain Level</h2>
+      <p>Use the slider below to indicate your current level of knee pain. Slide to the point that best represents how much pain you are feeling right now.</p>
+
+      <div class="form-group">
+        <label>Visual Analogue Scale (VAS)</label>
+        <div class="vas-container">
+          <div class="vas-labels">
+            <span>No Pain</span>
+            <span>Worst Possible Pain</span>
+          </div>
+          <input type="range" class="vas-slider" id="vasSlider" min="0" max="100" value="0" oninput="updateVAS()">
+          <div class="vas-value" id="vasValue">0</div>
+          <div class="vas-description" id="vasDesc">No pain</div>
+        </div>
+      </div>
+
+      <div class="intake-nav">
+        <button class="intake-back" onclick="intakeBack()">Back</button>
+        <button class="intake-next" onclick="intakeNext()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 3: LEFS -->
+    <div class="intake-step" id="intakeStep2">
+      <h2>Functional Assessment</h2>
+      <p>Lower Extremity Functional Scale (LEFS)</p>
+
+      <div class="lefs-intro">
+        We are interested in knowing whether you are having any difficulty with the activities listed below because of your lower limb problem. Please provide an answer for each activity. <strong>Today, do you or would you have any difficulty at all with:</strong>
+      </div>
+
+      <div id="lefsItems"></div>
+
+      <div class="lefs-score-display" id="lefsScoreDisplay" style="display:none">
+        <div class="score-num" id="lefsScoreNum">0</div>
+        <div class="score-label">out of 80</div>
+      </div>
+
+      <div class="intake-nav">
+        <button class="intake-back" onclick="intakeBack()">Back</button>
+        <button class="intake-next" id="intakeSubmitBtn" onclick="submitIntake()">Submit &amp; Begin</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -877,6 +1244,7 @@ function resetApp() {
     state = getDefaultState();
     saveState();
     localStorage.removeItem('kneeRehabWelcomeSeen');
+    localStorage.removeItem('kneeRehabIntake');
     render();
     checkFirstLaunch();
   }
@@ -1176,17 +1544,158 @@ function closeResult() {
   render();
 }
 
+// ─── Intake Questionnaire ───
+const LEFS_ITEMS = [
+  "Any of your usual work, housework, or school activities",
+  "Your usual hobbies, recreational or sporting activities",
+  "Getting into or out of the bath",
+  "Walking between rooms",
+  "Putting on your shoes or socks",
+  "Squatting",
+  "Lifting an object, like a bag of groceries from the floor",
+  "Performing light activities around your home",
+  "Performing heavy activities around your home",
+  "Getting into or out of a car",
+  "Walking 2 blocks",
+  "Walking a mile",
+  "Going up or down 10 stairs (about 1 flight of stairs)",
+  "Standing for 1 hour",
+  "Sitting for 1 hour",
+  "Running on even ground",
+  "Running on uneven ground",
+  "Making sharp turns while running fast",
+  "Hopping",
+  "Rolling over in bed"
+];
+
+const LEFS_OPTIONS = [
+  { label: "Unable", value: 0 },
+  { label: "Extreme", value: 1 },
+  { label: "Moderate", value: 2 },
+  { label: "A Little", value: 3 },
+  { label: "None", value: 4 }
+];
+
+let intakeStep = 0;
+let lefsAnswers = {};
+
+function checkIntakeNeeded() {
+  const intake = localStorage.getItem('kneeRehabIntake');
+  if (!intake) {
+    buildLEFS();
+    showIntakeStep(0);
+    document.getElementById('intakeOverlay').classList.add('show');
+  }
+}
+
+function buildLEFS() {
+  const container = document.getElementById('lefsItems');
+  let html = '';
+  LEFS_ITEMS.forEach((item, i) => {
+    html += `
+      <div class="lefs-item">
+        <div class="lefs-item-text"><span class="lefs-item-num">${i + 1}.</span> ${item}</div>
+        <div class="lefs-options">
+          ${LEFS_OPTIONS.map(opt => `
+            <button class="lefs-opt" id="lefs-${i}-${opt.value}" onclick="selectLEFS(${i}, ${opt.value})">${opt.label}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function selectLEFS(itemIndex, value) {
+  lefsAnswers[itemIndex] = value;
+  // Update button styles
+  LEFS_OPTIONS.forEach(opt => {
+    const btn = document.getElementById(`lefs-${itemIndex}-${opt.value}`);
+    btn.className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
+  });
+  // Show running score
+  updateLEFSScore();
+}
+
+function updateLEFSScore() {
+  const answered = Object.keys(lefsAnswers).length;
+  if (answered > 0) {
+    const total = Object.values(lefsAnswers).reduce((a, b) => a + b, 0);
+    document.getElementById('lefsScoreNum').textContent = total;
+    document.getElementById('lefsScoreDisplay').style.display = 'block';
+  }
+}
+
+function showIntakeStep(step) {
+  intakeStep = step;
+  for (let i = 0; i < 3; i++) {
+    const stepEl = document.getElementById(`intakeStep${i}`);
+    const dotEl = document.getElementById(`dot${i}`);
+    stepEl.className = 'intake-step' + (i === step ? ' active' : '');
+    dotEl.className = 'intake-step-dot' + (i < step ? ' done' : '') + (i === step ? ' active' : '');
+  }
+  // Scroll to top
+  document.getElementById('intakeOverlay').scrollTop = 0;
+}
+
+function intakeNext() {
+  if (intakeStep < 2) {
+    showIntakeStep(intakeStep + 1);
+  }
+}
+
+function intakeBack() {
+  if (intakeStep > 0) {
+    showIntakeStep(intakeStep - 1);
+  }
+}
+
+function updateVAS() {
+  const val = document.getElementById('vasSlider').value;
+  document.getElementById('vasValue').textContent = val;
+  let desc = 'No pain';
+  if (val > 0 && val <= 10) desc = 'Minimal pain';
+  else if (val > 10 && val <= 30) desc = 'Mild pain';
+  else if (val > 30 && val <= 50) desc = 'Moderate pain';
+  else if (val > 50 && val <= 70) desc = 'Moderately severe pain';
+  else if (val > 70 && val <= 90) desc = 'Severe pain';
+  else if (val > 90) desc = 'Worst possible pain';
+  document.getElementById('vasDesc').textContent = desc;
+}
+
+function submitIntake() {
+  const intakeData = {
+    name: document.getElementById('intakeName').value.trim(),
+    age: document.getElementById('intakeAge').value,
+    height: document.getElementById('intakeHeight').value,
+    weight: document.getElementById('intakeWeight').value,
+    painDuration: document.getElementById('intakeDuration').value,
+    vasPain: document.getElementById('vasSlider').value,
+    lefs: { ...lefsAnswers },
+    lefsTotal: Object.values(lefsAnswers).reduce((a, b) => a + b, 0),
+    submittedAt: new Date().toISOString()
+  };
+  
+  localStorage.setItem('kneeRehabIntake', JSON.stringify(intakeData));
+  document.getElementById('intakeOverlay').classList.remove('show');
+}
+
 // ─── Welcome / Instructions ───
 function checkFirstLaunch() {
   const seen = localStorage.getItem('kneeRehabWelcomeSeen');
   if (!seen) {
     document.getElementById('welcomeOverlay').classList.add('show');
+  } else {
+    // Welcome already seen, but check if intake still needed
+    checkIntakeNeeded();
   }
 }
 
 function dismissWelcome() {
   localStorage.setItem('kneeRehabWelcomeSeen', 'true');
   document.getElementById('welcomeOverlay').classList.remove('show');
+  // After dismissing welcome, check if intake is needed
+  checkIntakeNeeded();
 }
 
 function showInstructions() {
