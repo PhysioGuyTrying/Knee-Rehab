@@ -516,6 +516,171 @@ html, body {
   cursor: pointer;
   font-family: 'DM Sans', sans-serif;
 }
+
+/* ─── Welcome / Instructions ─── */
+.welcome-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 2000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.welcome-overlay.show {
+  display: block;
+}
+
+.welcome-content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+}
+
+.welcome-hero {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.welcome-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 32px;
+}
+
+.welcome-hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.welcome-hero p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.instructions-section {
+  margin-bottom: 24px;
+}
+
+.instructions-section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.instructions-section h2 .section-icon {
+  font-size: 20px;
+}
+
+.instructions-section p,
+.instructions-section li {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.instructions-list {
+  list-style: none;
+  padding: 0;
+}
+
+.instructions-list li {
+  padding: 6px 0 6px 24px;
+  position: relative;
+}
+
+.instructions-list li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.warning-box {
+  background: var(--danger-light);
+  border: 1px solid #e8baba;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 8px;
+}
+
+.warning-box p {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.warning-box li::before {
+  background: var(--danger) !important;
+}
+
+.disclaimer-box {
+  background: var(--warm-light);
+  border: 1px solid #e8d5b0;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.disclaimer-box p {
+  color: #8a6d30;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.welcome-start-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 24px;
+  transition: background 0.2s;
+}
+
+.welcome-start-btn:hover {
+  background: var(--accent-dark);
+}
+
+.info-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-left: auto;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>
 </head>
 <body>
@@ -523,8 +688,13 @@ html, body {
 <div class="app" id="app">
   <!-- Header -->
   <div class="header">
-    <h1>Knee Recovery</h1>
-    <div class="header-sub" id="headerSub">Week 1 of 6</div>
+    <div class="header-row">
+      <div>
+        <h1>Knee Recovery</h1>
+        <div class="header-sub" id="headerSub">Week 1 of 6</div>
+      </div>
+      <button class="info-btn" onclick="showInstructions()">ℹ️ Info</button>
+    </div>
   </div>
 
   <!-- Progress -->
@@ -547,6 +717,63 @@ html, body {
   <!-- Reset -->
   <div class="reset-section">
     <button class="reset-btn" onclick="resetApp()">Reset All Progress</button>
+  </div>
+</div>
+
+<!-- Welcome / Instructions Overlay -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-content">
+    <div class="welcome-hero">
+      <div class="welcome-icon">🦵</div>
+      <h1>Welcome to Knee Recovery</h1>
+      <p>A 6-week progressive exercise program designed to help you safely strengthen and rehabilitate your knee.</p>
+    </div>
+
+    <div class="instructions-section">
+      <h2><span class="section-icon">📋</span> How the Program Works</h2>
+      <p>Each week, you'll be given a set of exercises to complete daily. At the end of each week, you'll answer a few short questions about how your knee feels. If you're ready, you'll move on to more challenging exercises. If not, you'll repeat the current week — and that's completely fine. Everyone recovers at their own pace.</p>
+    </div>
+
+    <div class="instructions-section">
+      <h2><span class="section-icon">🎒</span> What You'll Need</h2>
+      <ul class="instructions-list">
+        <li>A chair or sturdy surface for support</li>
+        <li>A towel (rolled up, for use during some exercises)</li>
+        <li>An exercise mat or comfortable floor surface — if you have difficulty getting up from the floor, you can perform floor exercises on your bed instead</li>
+        <li>Comfortable clothing that allows free movement</li>
+      </ul>
+    </div>
+
+    <div class="instructions-section">
+      <h2><span class="section-icon">✅</span> Before You Begin</h2>
+      <ul class="instructions-list">
+        <li>Perform the exercises on a flat, non-slip surface</li>
+        <li>Warm up gently before starting (a short walk is fine)</li>
+        <li>Follow along with each video at your own pace</li>
+        <li>Do not rush through the exercises — focus on control and form</li>
+      </ul>
+    </div>
+
+    <div class="instructions-section">
+      <h2><span class="section-icon">🛑</span> When to Stop</h2>
+      <div class="warning-box">
+        <p>Stop exercising and consult your healthcare provider if you experience:</p>
+        <ul class="instructions-list">
+          <li>Sharp or sudden pain in or around the knee</li>
+          <li>Significant swelling that doesn't go down</li>
+          <li>A feeling of instability or your knee "giving way"</li>
+          <li>Pain that worsens over the course of the week</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="instructions-section">
+      <div class="disclaimer-box">
+        <p>⚠️ This program is not a substitute for professional medical advice. If you have any concerns about your condition, please speak with your physiotherapist or doctor before continuing.</p>
+      </div>
+    </div>
+
+    <button class="welcome-start-btn" id="welcomeStartBtn" onclick="dismissWelcome()">Get Started</button>
   </div>
 </div>
 
@@ -649,7 +876,9 @@ function resetApp() {
   if (confirm('Reset all progress? This cannot be undone.')) {
     state = getDefaultState();
     saveState();
+    localStorage.removeItem('kneeRehabWelcomeSeen');
     render();
+    checkFirstLaunch();
   }
 }
 
@@ -947,6 +1176,24 @@ function closeResult() {
   render();
 }
 
+// ─── Welcome / Instructions ───
+function checkFirstLaunch() {
+  const seen = localStorage.getItem('kneeRehabWelcomeSeen');
+  if (!seen) {
+    document.getElementById('welcomeOverlay').classList.add('show');
+  }
+}
+
+function dismissWelcome() {
+  localStorage.setItem('kneeRehabWelcomeSeen', 'true');
+  document.getElementById('welcomeOverlay').classList.remove('show');
+}
+
+function showInstructions() {
+  document.getElementById('welcomeStartBtn').textContent = 'Close';
+  document.getElementById('welcomeOverlay').classList.add('show');
+}
+
 // ─── Notifications ───
 async function requestNotificationPermission() {
   if ('Notification' in window && Notification.permission === 'default') {
@@ -961,6 +1208,7 @@ if ('serviceWorker' in navigator) {
 
 // ─── Init ───
 requestNotificationPermission();
+checkFirstLaunch();
 render();
 </script>
 </body>
