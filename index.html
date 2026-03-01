@@ -1144,13 +1144,46 @@ html, body {
   </div>
 </div>
 
-<!-- Assessment Modal -->
-<div class="modal-overlay" id="assessmentModal">
-  <div class="modal">
-    <h2>Weekly Check-in</h2>
-    <p>Answer these questions to determine if you're ready to progress.</p>
+<!-- Assessment Overlay (full page, scrollable) -->
+<div class="welcome-overlay" id="assessmentOverlay">
+  <div class="welcome-content">
+    <h2 style="font-family:'Fraunces',serif; font-size:22px; margin-bottom:6px;">Weekly Check-in</h2>
+    <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">Answer these questions to determine if you're ready to progress.</p>
+
     <div id="assessmentQuestions"></div>
-    <button class="submit-assessment" id="submitAssessment" onclick="submitAssessment()" disabled>Submit Assessment</button>
+
+    <!-- VAS section (always shown) -->
+    <div class="instructions-section" style="margin-top:20px;">
+      <h2><span class="section-icon">📊</span> Current Pain Level</h2>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">Use the slider to indicate your current knee pain.</p>
+      <div class="vas-container">
+        <div class="vas-labels">
+          <span>No Pain</span>
+          <span>Worst Possible Pain</span>
+        </div>
+        <input type="range" class="vas-slider" id="assessVasSlider" min="0" max="100" value="0" oninput="updateAssessVAS()">
+        <div class="vas-value" id="assessVasValue">0</div>
+        <div class="vas-description" id="assessVasDesc">No pain</div>
+      </div>
+    </div>
+
+    <!-- LEFS section (shown at weeks 3 and 6 only) -->
+    <div id="assessLefsSection" style="display:none; margin-top:20px;">
+      <div class="instructions-section">
+        <h2><span class="section-icon">📋</span> Functional Assessment (LEFS)</h2>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">This is a scheduled re-assessment to track your functional progress.</p>
+      </div>
+      <div class="lefs-intro">
+        We are interested in knowing whether you are having any difficulty with the activities listed below because of your lower limb problem. Please provide an answer for each activity. <strong>Today, do you or would you have any difficulty at all with:</strong>
+      </div>
+      <div id="assessLefsItems"></div>
+      <div class="lefs-score-display" id="assessLefsScoreDisplay" style="display:none">
+        <div class="score-num" id="assessLefsScoreNum">0</div>
+        <div class="score-label">out of 80</div>
+      </div>
+    </div>
+
+    <button class="submit-assessment" id="submitAssessment" onclick="submitAssessment()" disabled style="margin-top:24px;">Submit Assessment</button>
   </div>
 </div>
 
@@ -1399,10 +1432,11 @@ function renderContent() {
   
   // Assessment banner
   if (canTakeAssessment(week)) {
+    const lefsNote = isLefsWeek(week) ? ' This week includes a functional assessment (LEFS).' : '';
     html += `
       <div class="assessment-banner" onclick="openAssessment()">
         <h3>🎯 Week Complete!</h3>
-        <p>Take your weekly check-in to see if you can advance.</p>
+        <p>Take your weekly check-in to see if you can advance.${lefsNote}</p>
       </div>
     `;
   }
@@ -1438,9 +1472,17 @@ function selectDay(d) {
 
 // ─── Assessment ───
 let assessmentAnswers = {};
+let assessLefsAnswers = {};
+const LEFS_WEEKS = [3, 6]; // Weeks where LEFS is administered
+
+function isLefsWeek(week) {
+  return LEFS_WEEKS.includes(week);
+}
 
 function openAssessment() {
   assessmentAnswers = {};
+  assessLefsAnswers = {};
+  const week = state.currentWeek;
   const container = document.getElementById('assessmentQuestions');
   
   let html = '';
@@ -1457,8 +1499,69 @@ function openAssessment() {
   });
   container.innerHTML = html;
   
+  // Reset VAS
+  document.getElementById('assessVasSlider').value = 0;
+  document.getElementById('assessVasValue').textContent = '0';
+  document.getElementById('assessVasDesc').textContent = 'No pain';
+  
+  // Show/hide LEFS section
+  const lefsSection = document.getElementById('assessLefsSection');
+  if (isLefsWeek(week)) {
+    lefsSection.style.display = 'block';
+    buildAssessLEFS();
+  } else {
+    lefsSection.style.display = 'none';
+  }
+  
   document.getElementById('submitAssessment').disabled = true;
-  document.getElementById('assessmentModal').classList.add('show');
+  document.getElementById('assessmentOverlay').classList.add('show');
+  document.getElementById('assessmentOverlay').scrollTop = 0;
+}
+
+function buildAssessLEFS() {
+  const container = document.getElementById('assessLefsItems');
+  let html = '';
+  LEFS_ITEMS.forEach((item, i) => {
+    html += `
+      <div class="lefs-item">
+        <div class="lefs-item-text"><span class="lefs-item-num">${i + 1}.</span> ${item}</div>
+        <div class="lefs-options">
+          ${LEFS_OPTIONS.map(opt => `
+            <button class="lefs-opt" id="assess-lefs-${i}-${opt.value}" onclick="selectAssessLEFS(${i}, ${opt.value})">${opt.label}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+  document.getElementById('assessLefsScoreDisplay').style.display = 'none';
+}
+
+function selectAssessLEFS(itemIndex, value) {
+  assessLefsAnswers[itemIndex] = value;
+  LEFS_OPTIONS.forEach(opt => {
+    const btn = document.getElementById(`assess-lefs-${itemIndex}-${opt.value}`);
+    btn.className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
+  });
+  // Update score
+  const total = Object.values(assessLefsAnswers).reduce((a, b) => a + b, 0);
+  document.getElementById('assessLefsScoreNum').textContent = total;
+  document.getElementById('assessLefsScoreDisplay').style.display = 'block';
+  // Check submit readiness
+  checkAssessmentReady();
+}
+
+function updateAssessVAS() {
+  const val = document.getElementById('assessVasSlider').value;
+  document.getElementById('assessVasValue').textContent = val;
+  let desc = 'No pain';
+  if (val > 0 && val <= 10) desc = 'Minimal pain';
+  else if (val > 10 && val <= 30) desc = 'Mild pain';
+  else if (val > 30 && val <= 50) desc = 'Moderate pain';
+  else if (val > 50 && val <= 70) desc = 'Moderately severe pain';
+  else if (val > 70 && val <= 90) desc = 'Severe pain';
+  else if (val > 90) desc = 'Worst possible pain';
+  document.getElementById('assessVasDesc').textContent = desc;
 }
 
 function answerQuestion(index, answer) {
@@ -1470,9 +1573,19 @@ function answerQuestion(index, answer) {
   yesBtn.className = 'answer-btn' + (answer === 'yes' ? ' selected-yes' : '');
   noBtn.className = 'answer-btn' + (answer === 'no' ? ' selected-no' : '');
   
-  // Enable submit if all answered
-  const allAnswered = CONFIG.assessmentQuestions.every((_, i) => assessmentAnswers[i] !== undefined);
-  document.getElementById('submitAssessment').disabled = !allAnswered;
+  checkAssessmentReady();
+}
+
+function checkAssessmentReady() {
+  const week = state.currentWeek;
+  const allQuestionsAnswered = CONFIG.assessmentQuestions.every((_, i) => assessmentAnswers[i] !== undefined);
+  
+  let lefsComplete = true;
+  if (isLefsWeek(week)) {
+    lefsComplete = Object.keys(assessLefsAnswers).length === 20;
+  }
+  
+  document.getElementById('submitAssessment').disabled = !(allQuestionsAnswered && lefsComplete);
 }
 
 function submitAssessment() {
@@ -1483,11 +1596,20 @@ function submitAssessment() {
     return assessmentAnswers[i] === q.advanceOn;
   });
   
-  state.assessments[week] = {
+  const assessmentData = {
     passed: passed,
     answers: { ...assessmentAnswers },
+    vas: parseInt(document.getElementById('assessVasSlider').value),
     date: new Date().toISOString()
   };
+  
+  // Add LEFS data if it was a LEFS week
+  if (isLefsWeek(week)) {
+    assessmentData.lefs = { ...assessLefsAnswers };
+    assessmentData.lefsTotal = Object.values(assessLefsAnswers).reduce((a, b) => a + b, 0);
+  }
+  
+  state.assessments[week] = assessmentData;
   
   if (passed && state.currentWeek < CONFIG.totalWeeks) {
     state.currentWeek += 1;
@@ -1504,7 +1626,7 @@ function submitAssessment() {
   }
   
   saveState();
-  document.getElementById('assessmentModal').classList.remove('show');
+  document.getElementById('assessmentOverlay').classList.remove('show');
   
   // Show result
   showResult(passed, week);
