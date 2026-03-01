@@ -1,6 +1,5 @@
-const CACHE_NAME = 'knee-rehab-v4';
+const CACHE_NAME = 'knee-rehab-v5';
 const ASSETS = [
-  '/index.html',
   '/manifest.json',
   '/videos/001-04-Isometric_Quads_L_1-1.mp4',
   '/videos/002-05-Static_Hamstrings_L_1-1.mp4',
@@ -27,7 +26,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
-  );
+  // Always fetch index.html from network first (so code updates take effect immediately)
+  if (event.request.url.includes('index.html') || event.request.url.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(cached => cached || fetch(event.request))
+    );
+  }
 });
