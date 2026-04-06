@@ -1082,21 +1082,21 @@ html, body {
       </div>
     </div>
 
-    <!-- Step 2: Pain Level (VAS) -->
+    <!-- Step 2: Pain Level (NPRS) -->
     <div class="intake-step" id="intakeStep1">
       <h2>Your Pain Level</h2>
-      <p>Use the slider below to indicate your current level of knee pain. Slide to the point that best represents how much pain you are feeling right now.</p>
+      <p>On a scale of 0 to 10, how would you rate your current knee pain?</p>
 
       <div class="form-group">
-        <label>Visual Analogue Scale (VAS)</label>
+        <label>Numeric Pain Rating Scale (NPRS)</label>
         <div class="vas-container">
           <div class="vas-labels">
             <span>No Pain</span>
             <span>Worst Possible Pain</span>
           </div>
-          <input type="range" class="vas-slider" id="vasSlider" min="0" max="100" value="0" oninput="updateVAS()">
-          <div class="vas-value" id="vasValue">0</div>
-          <div class="vas-description" id="vasDesc">No pain</div>
+          <input type="range" class="vas-slider" id="nprsSlider" min="0" max="10" value="0" step="1" oninput="updateNPRS()">
+          <div class="vas-value" id="nprsValue">0</div>
+          <div class="vas-description" id="nprsDesc">No pain</div>
         </div>
       </div>
 
@@ -1200,18 +1200,18 @@ html, body {
 
     <div id="assessmentQuestions"></div>
 
-    <!-- VAS section (always shown) -->
+    <!-- NPRS section (always shown) -->
     <div class="instructions-section" style="margin-top:20px;">
       <h2><span class="section-icon">📊</span> Current Pain Level</h2>
-      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">Use the slider to indicate your current knee pain.</p>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">Rate your current knee pain on a scale of 0 to 10.</p>
       <div class="vas-container">
         <div class="vas-labels">
           <span>No Pain</span>
           <span>Worst Possible Pain</span>
         </div>
-        <input type="range" class="vas-slider" id="assessVasSlider" min="0" max="100" value="0" oninput="updateAssessVAS()">
-        <div class="vas-value" id="assessVasValue">0</div>
-        <div class="vas-description" id="assessVasDesc">No pain</div>
+        <input type="range" class="vas-slider" id="assessNprsSlider" min="0" max="10" value="0" step="1" oninput="updateAssessNPRS()">
+        <div class="vas-value" id="assessNprsValue">0</div>
+        <div class="vas-description" id="assessNprsDesc">No pain</div>
       </div>
     </div>
 
@@ -1247,57 +1247,69 @@ html, body {
 const CONFIG = {
   totalWeeks: 6,
   daysPerWeek: 7,
-  weeks: {
-    1: {
-      name: "Week 1 — Foundation",
-      exercises: [
-        { id: "w1e1", name: "Static Quads", video: "videos/001-04-Isometric_Quads_L_1-1.mp4" },
-        { id: "w1e2", name: "Static Hamstrings", video: "videos/002-05-Static_Hamstrings_L_1-1.mp4" },
-        { id: "w1e3", name: "Static Glutes", video: "videos/003-06-Isometric_Glutes_L_1-1.mp4" }
-      ]
+  tiers: {
+    supported: {
+      name: "Tier 1 — Supported",
+      description: "Gentle exercises with more guidance",
+      weeks: {
+        1: { name: "Week 1", exercises: [{ id: "s1e1", name: "Coming soon", video: "" }] },
+        2: { name: "Week 2", exercises: [{ id: "s2e1", name: "Coming soon", video: "" }] },
+        3: { name: "Week 3", exercises: [{ id: "s3e1", name: "Coming soon", video: "" }] },
+        4: { name: "Week 4", exercises: [{ id: "s4e1", name: "Coming soon", video: "" }] },
+        5: { name: "Week 5", exercises: [{ id: "s5e1", name: "Coming soon", video: "" }] },
+        6: { name: "Week 6", exercises: [{ id: "s6e1", name: "Coming soon", video: "" }] }
+      }
     },
-    2: {
-      name: "Week 2 — Building Strength",
-      exercises: [
-        { id: "w2e1", name: "Clamshells", video: "videos/008-13-Clamshells-L 1-2.mp4" },
-        { id: "w2e2", name: "Side Lying Hip Abduction", video: "videos/013-19-Side Lying Hip Abduction-L 2-1.mp4" },
-        { id: "w2e3", name: "Straight Leg Raise with Hip Abduction", video: "videos/021-27-SLR with Hip Abduction-M 1-4.mp4" }
-      ]
+    progressive: {
+      name: "Tier 2 — Progressive",
+      description: "Structured progressive program",
+      weeks: {
+        1: { name: "Week 1 \u2014 Foundation", exercises: [
+          { id: "w1e1", name: "Static Quads", video: "videos/001-04-Isometric_Quads_L_1-1.mp4" },
+          { id: "w1e2", name: "Static Hamstrings", video: "videos/002-05-Static_Hamstrings_L_1-1.mp4" },
+          { id: "w1e3", name: "Static Glutes", video: "videos/003-06-Isometric_Glutes_L_1-1.mp4" }
+        ]},
+        2: { name: "Week 2 \u2014 Building Strength", exercises: [
+          { id: "w2e1", name: "Clamshells", video: "videos/008-13-Clamshells-L 1-2.mp4" },
+          { id: "w2e2", name: "Side Lying Hip Abduction", video: "videos/013-19-Side Lying Hip Abduction-L 2-1.mp4" },
+          { id: "w2e3", name: "Straight Leg Raise with Hip Abduction", video: "videos/021-27-SLR with Hip Abduction-M 1-4.mp4" }
+        ]},
+        3: { name: "Week 3 \u2014 Functional Movement", exercises: [
+          { id: "w3e1", name: "Standing Knee Flexion", video: "videos/068-78-Standing Knee Flexion-L 4-2.mp4" },
+          { id: "w3e2", name: "Standing Heel Raises", video: "videos/085\u201399-Bilateral Calf Raises No Support-L 6-2.mp4" },
+          { id: "w3e3", name: "Standing Hip Extension", video: "videos/087-101-Standing Hip Extension  no toe down between-L 6-2.mp4" },
+          { id: "w3e4", name: "Standing Hip Abduction", video: "videos/062-70-Supported Hip Abduction-L 4-1.mp4" }
+        ]},
+        4: { name: "Week 4 \u2014 Balance & Resistance", exercises: [
+          { id: "w4e1", name: "Marching No Support", video: "videos/083-96-Marching without hands-L 6-2 .mp4" },
+          { id: "w4e2", name: "Single Leg Stance No Support", video: "videos/084-97-Single Leg Stand.mp4" },
+          { id: "w4e3", name: "Standing Hip Abduction with Resistance Band", video: "videos/088-102-Hip Abduction with Band-M 1-2.mp4" },
+          { id: "w4e4", name: "Standing Hip Extension with Resistance Band", video: "videos/089-103-Hip Extension with Band-M 1-2.mp4" }
+        ]},
+        5: { name: "Week 5 \u2014 Power & Control", exercises: [
+          { id: "w5e1", name: "One Leg Heel Raise", video: "videos/101 - 115 One Leg Heel Raise M1-6.mp4" },
+          { id: "w5e2", name: "Side Step with Resistance Band", video: "videos/108 - Take 122 Sidestep with Band M1-8.mp4" },
+          { id: "w5e3", name: "Standing Hip Diagonal Abduction with Theraband", video: "videos/120 - Diagonal Hip Abduction with Band M1-12.mp4" },
+          { id: "w5e4", name: "Sit to Stand No Hands", video: "videos/093 - 107 Sit to Stand No Hands.mp4" }
+        ]},
+        6: { name: "Week 6 \u2014 Advanced Strengthening", exercises: [
+          { id: "w6e1", name: "Single Leg Hip Hinge", video: "videos/117 - 747 with Support M1-12.mp4" },
+          { id: "w6e2", name: "Forward Step Ups", video: "videos/110 - Take 124 Forward Step Ups M1-9.mp4" },
+          { id: "w6e3", name: "Side Step Ups", video: "videos/111 - Take 125 Side Step Ups M 1-11.mp4" }
+        ]}
+      }
     },
-    3: {
-      name: "Week 3 — Functional Movement",
-      exercises: [
-        { id: "w3e1", name: "Standing Knee Flexion", video: "videos/068-78-Standing Knee Flexion-L 4-2.mp4" },
-        { id: "w3e2", name: "Standing Heel Raises", video: "videos/085–99-Bilateral Calf Raises No Support-L 6-2.mp4" },
-        { id: "w3e3", name: "Standing Hip Extension", video: "videos/087-101-Standing Hip Extension  no toe down between-L 6-2.mp4" },
-        { id: "w3e4", name: "Standing Hip Abduction", video: "videos/062-70-Supported Hip Abduction-L 4-1.mp4" }
-      ]
-    },
-    4: {
-      name: "Week 4 — Balance & Resistance",
-      exercises: [
-        { id: "w4e1", name: "Marching No Support", video: "videos/083-96-Marching without hands-L 6-2 .mp4" },
-        { id: "w4e2", name: "Single Leg Stance No Support", video: "videos/084-97-Single Leg Stand.mp4" },
-        { id: "w4e3", name: "Standing Hip Abduction with Resistance Band", video: "videos/088-102-Hip Abduction with Band-M 1-2.mp4" },
-        { id: "w4e4", name: "Standing Hip Extension with Resistance Band", video: "videos/089-103-Hip Extension with Band-M 1-2.mp4" }
-      ]
-    },
-    5: {
-      name: "Week 5 — Power & Control",
-      exercises: [
-        { id: "w5e1", name: "One Leg Heel Raise", video: "videos/101 - 115 One Leg Heel Raise M1-6.mp4" },
-        { id: "w5e2", name: "Side Step with Resistance Band", video: "videos/108 - Take 122 Sidestep with Band M1-8.mp4" },
-        { id: "w5e3", name: "Standing Hip Diagonal Abduction with Theraband", video: "videos/120 - Diagonal Hip Abduction with Band M1-12.mp4" },
-        { id: "w5e4", name: "Sit to Stand No Hands", video: "videos/093 - 107 Sit to Stand No Hands.mp4" }
-      ]
-    },
-    6: {
-      name: "Week 6 — Advanced Strengthening",
-      exercises: [
-        { id: "w6e1", name: "Single Leg Hip Hinge", video: "videos/117 - 747 with Support M1-12.mp4" },
-        { id: "w6e2", name: "Forward Step Ups", video: "videos/110 - Take 124 Forward Step Ups M1-9.mp4" },
-        { id: "w6e3", name: "Side Step Ups", video: "videos/111 - Take 125 Side Step Ups M 1-11.mp4" }
-      ]
+    performance: {
+      name: "Tier 3 — Performance",
+      description: "Higher intensity, performance-oriented",
+      weeks: {
+        1: { name: "Week 1", exercises: [{ id: "p1e1", name: "Coming soon", video: "" }] },
+        2: { name: "Week 2", exercises: [{ id: "p2e1", name: "Coming soon", video: "" }] },
+        3: { name: "Week 3", exercises: [{ id: "p3e1", name: "Coming soon", video: "" }] },
+        4: { name: "Week 4", exercises: [{ id: "p4e1", name: "Coming soon", video: "" }] },
+        5: { name: "Week 5", exercises: [{ id: "p5e1", name: "Coming soon", video: "" }] },
+        6: { name: "Week 6", exercises: [{ id: "p6e1", name: "Coming soon", video: "" }] }
+      }
     }
   },
   assessmentQuestions: [
@@ -1308,6 +1320,30 @@ const CONFIG = {
   ]
 };
 
+// ─── Triage Logic ───
+function determineTier(lefsScore, nprsScore) {
+  if (lefsScore <= 34 || nprsScore >= 7) return 'supported';
+  if (lefsScore >= 60 && nprsScore <= 3) return 'performance';
+  return 'progressive';
+}
+
+function checkTierTransition(currentTier, lefsScore, nprsScore, prevLefs, prevNprs) {
+  if (prevLefs !== null && prevNprs !== null) {
+    if ((prevLefs - lefsScore) >= 9 && (nprsScore - prevNprs) >= 2) {
+      if (currentTier === 'performance') return 'progressive';
+      if (currentTier === 'progressive') return 'supported';
+    }
+  }
+  if (currentTier === 'supported' && lefsScore >= 35 && nprsScore <= 6) return 'progressive';
+  if (currentTier === 'progressive' && lefsScore >= 60 && nprsScore <= 3) return 'performance';
+  return currentTier;
+}
+
+function getTierWeeks() {
+  const tier = state.tier || 'progressive';
+  return CONFIG.tiers[tier]?.weeks || {};
+}
+
 // ─── State ───
 let state = loadState();
 
@@ -1315,8 +1351,9 @@ function getDefaultState() {
   return {
     currentWeek: 1,
     selectedDay: 1,
-    completions: {},    // { "w1d1": { exercises: ["w1e1","w1e2"], completedAt: "..." } }
-    assessments: {},    // { 1: { passed: true, answers: [...], date: "..." } }
+    tier: null,         // 'supported', 'progressive', or 'performance'
+    completions: {},
+    assessments: {},
     weekStartDates: { 1: new Date().toISOString() }
   };
 }
@@ -1350,7 +1387,7 @@ function getDayKey(week, day) { return `w${week}d${day}`; }
 
 function isDayCompleted(week, day) {
   const key = getDayKey(week, day);
-  const weekExercises = CONFIG.weeks[week]?.exercises || [];
+  const weekExercises = getTierWeeks()[week]?.exercises || [];
   const comp = state.completions[key];
   if (!comp) return false;
   return weekExercises.every(ex => comp.exercises.includes(ex.id));
@@ -1376,7 +1413,7 @@ function toggleExercise(week, day, exerciseId) {
   } else {
     state.completions[key].exercises.push(exerciseId);
     // Check if all exercises are done
-    const weekExercises = CONFIG.weeks[week]?.exercises || [];
+    const weekExercises = getTierWeeks()[week]?.exercises || [];
     if (weekExercises.every(ex => state.completions[key].exercises.includes(ex.id))) {
       state.completions[key].completedAt = new Date().toISOString();
     }
@@ -1388,7 +1425,7 @@ function toggleExercise(week, day, exerciseId) {
   const isNowDone = isDayCompleted(week, day);
   if (!wasDone && isNowDone) {
     // Send completion data to Google Sheets
-    const weekExercises = CONFIG.weeks[week]?.exercises || [];
+    const weekExercises = getTierWeeks()[week]?.exercises || [];
     sendCompletionData(week, day, weekExercises.length, weekExercises.length);
     showDayToast(week, day);
   }
@@ -1468,7 +1505,8 @@ function renderProgress() {
   if (isProgramComplete()) {
     document.getElementById('headerSub').textContent = 'Program Complete!';
   } else {
-    document.getElementById('headerSub').textContent = `Week ${state.currentWeek} of ${CONFIG.totalWeeks}`;
+    const tierName = CONFIG.tiers[state.tier]?.name || '';
+    document.getElementById('headerSub').textContent = `Week ${state.currentWeek} of ${CONFIG.totalWeeks} • ${tierName}`;
   }
 }
 
@@ -1508,7 +1546,7 @@ function renderContent() {
   }
   
   const week = state.currentWeek;
-  const weekData = CONFIG.weeks[week];
+  const weekData = getTierWeeks()[week];
   
   if (!weekData) {
     container.innerHTML = '<div class="empty-state"><p>No exercises configured for this week.</p></div>';
@@ -1602,9 +1640,9 @@ function openAssessment() {
   container.innerHTML = html;
   
   // Reset VAS
-  document.getElementById('assessVasSlider').value = 0;
-  document.getElementById('assessVasValue').textContent = '0';
-  document.getElementById('assessVasDesc').textContent = 'No pain';
+  document.getElementById('assessNprsSlider').value = 0;
+  document.getElementById('assessNprsValue').textContent = '0';
+  document.getElementById('assessNprsDesc').textContent = 'No pain';
   
   // Show/hide LEFS section
   const lefsSection = document.getElementById('assessLefsSection');
@@ -1653,17 +1691,14 @@ function selectAssessLEFS(itemIndex, value) {
   checkAssessmentReady();
 }
 
-function updateAssessVAS() {
-  const val = document.getElementById('assessVasSlider').value;
-  document.getElementById('assessVasValue').textContent = val;
+function updateAssessNPRS() {
+  const val = parseInt(document.getElementById('assessNprsSlider').value);
+  document.getElementById('assessNprsValue').textContent = val;
   let desc = 'No pain';
-  if (val > 0 && val <= 10) desc = 'Minimal pain';
-  else if (val > 10 && val <= 30) desc = 'Mild pain';
-  else if (val > 30 && val <= 50) desc = 'Moderate pain';
-  else if (val > 50 && val <= 70) desc = 'Moderately severe pain';
-  else if (val > 70 && val <= 90) desc = 'Severe pain';
-  else if (val > 90) desc = 'Worst possible pain';
-  document.getElementById('assessVasDesc').textContent = desc;
+  if (val >= 1 && val <= 3) desc = 'Mild pain';
+  else if (val >= 4 && val <= 6) desc = 'Moderate pain';
+  else if (val >= 7 && val <= 10) desc = 'Severe pain';
+  document.getElementById('assessNprsDesc').textContent = desc;
 }
 
 function answerQuestion(index, answer) {
@@ -1701,7 +1736,7 @@ function submitAssessment() {
   const assessmentData = {
     passed: passed,
     answers: { ...assessmentAnswers },
-    vas: parseInt(document.getElementById('assessVasSlider').value),
+    nprs: parseInt(document.getElementById('assessNprsSlider').value),
     date: new Date().toISOString()
   };
   
@@ -1815,7 +1850,7 @@ function sendIntakeData(intakeData) {
     type: 'intake',
     userId: getUserId(),
     ageRange: getAgeRange(intakeData.age),
-    vas: intakeData.vasPain,
+    nprs: intakeData.nprs,
     lefsTotal: intakeData.lefsTotal,
     painDuration: intakeData.painDuration
   });
@@ -1826,7 +1861,7 @@ function sendAssessmentData(week, assessmentData) {
     type: 'weekly_assessment',
     userId: getUserId(),
     week: week,
-    vas: assessmentData.vas,
+    nprs: assessmentData.nprs,
     lefsTotal: assessmentData.lefsTotal || null,
     answers: assessmentData.answers,
     passed: assessmentData.passed
@@ -1951,38 +1986,63 @@ function intakeBack() {
   }
 }
 
-function updateVAS() {
-  const val = document.getElementById('vasSlider').value;
-  document.getElementById('vasValue').textContent = val;
+function updateNPRS() {
+  const val = parseInt(document.getElementById('nprsSlider').value);
+  document.getElementById('nprsValue').textContent = val;
   let desc = 'No pain';
-  if (val > 0 && val <= 10) desc = 'Minimal pain';
-  else if (val > 10 && val <= 30) desc = 'Mild pain';
-  else if (val > 30 && val <= 50) desc = 'Moderate pain';
-  else if (val > 50 && val <= 70) desc = 'Moderately severe pain';
-  else if (val > 70 && val <= 90) desc = 'Severe pain';
-  else if (val > 90) desc = 'Worst possible pain';
-  document.getElementById('vasDesc').textContent = desc;
+  if (val >= 1 && val <= 3) desc = 'Mild pain';
+  else if (val >= 4 && val <= 6) desc = 'Moderate pain';
+  else if (val >= 7 && val <= 10) desc = 'Severe pain';
+  document.getElementById('nprsDesc').textContent = desc;
 }
 
 function submitIntake() {
+  const lefsTotal = Object.keys(lefsAnswers).length > 0 ? Object.values(lefsAnswers).reduce((a, b) => a + b, 0) : null;
+  const nprsScore = parseInt(document.getElementById('nprsSlider').value);
+  
   const intakeData = {
     name: document.getElementById('intakeName').value.trim(),
     age: document.getElementById('intakeAge').value,
     height: document.getElementById('intakeHeight').value,
     weight: document.getElementById('intakeWeight').value,
     painDuration: document.getElementById('intakeDuration').value,
-    vasPain: document.getElementById('vasSlider').value,
+    nprs: nprsScore,
     lefs: { ...lefsAnswers },
-    lefsTotal: Object.values(lefsAnswers).reduce((a, b) => a + b, 0),
+    lefsTotal: lefsTotal,
     submittedAt: new Date().toISOString()
   };
+  
+  // Determine tier based on LEFS and NPRS
+  if (lefsTotal !== null) {
+    const tier = determineTier(lefsTotal, nprsScore);
+    intakeData.tier = tier;
+    state.tier = tier;
+    saveState();
+  }
   
   localStorage.setItem('kneeRehabIntake', JSON.stringify(intakeData));
   
   // Send anonymized data to Google Sheets
   sendIntakeData(intakeData);
   
+  // Show tier assignment result
+  showTierResult(state.tier);
   document.getElementById('intakeOverlay').classList.remove('show');
+}
+
+
+function showTierResult(tier) {
+  const tierInfo = CONFIG.tiers[tier];
+  if (!tierInfo) return;
+  const container = document.getElementById('resultMessage');
+  container.innerHTML = `
+    <div class="result-icon advance">📋</div>
+    <h3>Your Program: ${tierInfo.name}</h3>
+    <p>${tierInfo.description}</p>
+    <p style="margin-top:8px; font-size:13px; color:var(--text-muted);">This was determined by your pain and functional scores. Your tier may change as you progress.</p>
+    <button class="result-btn" onclick="closeResult()">Begin Program</button>
+  `;
+  document.getElementById('resultModal').classList.add('show');
 }
 
 // ─── Welcome / Instructions ───
@@ -2021,6 +2081,18 @@ if ('serviceWorker' in navigator) {
 }
 
 // ─── Init ───
+// Load tier from intake if not in state
+if (!state.tier) {
+  try {
+    const intake = JSON.parse(localStorage.getItem('kneeRehabIntake') || '{}');
+    if (intake.tier) {
+      state.tier = intake.tier;
+      saveState();
+    } else {
+      state.tier = 'progressive'; // default
+    }
+  } catch(e) { state.tier = 'progressive'; }
+}
 requestNotificationPermission();
 checkFirstLaunch();
 render();
