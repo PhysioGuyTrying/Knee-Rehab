@@ -10,6 +10,7 @@
 <title>Knee Recovery</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
 <style>
+
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
@@ -983,12 +984,61 @@ html, body {
   align-items: center;
   justify-content: space-between;
 }
+
+/* ─── Tier Badge ─── */
+.tier-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.tier-badge.supported { background: var(--warm-light); color: #8a6d30; }
+.tier-badge.progressive { background: var(--accent-light); color: var(--accent-dark); }
+.tier-badge.performance { background: #e8e0f5; color: #5b3d8f; }
+
+/* ─── Inconsistency Warning ─── */
+.inconsistency-box {
+  background: var(--warm-light);
+  border: 2px solid var(--warm);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.inconsistency-box p {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.inconsistency-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.inconsistency-btns button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
 </style>
 </head>
 <body>
 
 <div class="app" id="app">
-  <!-- Header -->
   <div class="header">
     <div class="header-row">
       <div>
@@ -999,7 +1049,6 @@ html, body {
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="progress-section">
     <div class="progress-label">
       <span>Overall Progress</span>
@@ -1010,13 +1059,9 @@ html, body {
     </div>
   </div>
 
-  <!-- Week Chips -->
   <div class="week-chips" id="weekChips"></div>
-
-  <!-- Main Content -->
   <div class="content" id="mainContent"></div>
 
-  <!-- Reset -->
   <div class="reset-section">
     <button class="reset-btn" onclick="resetApp()">Reset All Progress</button>
   </div>
@@ -1037,21 +1082,18 @@ html, body {
       <div class="intake-step-dot" id="dot2"></div>
     </div>
 
-    <!-- Step 1: Personal Information -->
+    <!-- Step 1: Demographics -->
     <div class="intake-step" id="intakeStep0">
       <h2>About You</h2>
       <p>Please provide some basic information so we can personalise your experience.</p>
-
       <div class="form-group">
         <label for="intakeName">Name</label>
         <input type="text" id="intakeName" placeholder="Your first name">
       </div>
-
       <div class="form-group">
         <label for="intakeAge">Age</label>
         <input type="number" id="intakeAge" placeholder="e.g. 45" min="1" max="120">
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label for="intakeHeight">Height (cm)</label>
@@ -1062,7 +1104,6 @@ html, body {
           <input type="number" id="intakeWeight" placeholder="e.g. 75" min="20" max="300">
         </div>
       </div>
-
       <div class="form-group">
         <label for="intakeDuration">How long have you had knee pain?</label>
         <select id="intakeDuration">
@@ -1076,30 +1117,24 @@ html, body {
           <option value="more_than_2_years">More than 2 years</option>
         </select>
       </div>
-
       <div class="intake-nav">
         <button class="intake-next" onclick="intakeNext()">Next</button>
       </div>
     </div>
 
-    <!-- Step 2: Pain Level (NPRS) -->
+    <!-- Step 2: NPRS -->
     <div class="intake-step" id="intakeStep1">
       <h2>Your Pain Level</h2>
       <p>On a scale of 0 to 10, how would you rate your current knee pain?</p>
-
       <div class="form-group">
         <label>Numeric Pain Rating Scale (NPRS)</label>
         <div class="vas-container">
-          <div class="vas-labels">
-            <span>No Pain</span>
-            <span>Worst Possible Pain</span>
-          </div>
-          <input type="range" class="vas-slider" id="nprsSlider" min="0" max="10" value="0" step="1" oninput="updateNPRS()">
+          <div class="vas-labels"><span>No Pain</span><span>Worst Possible Pain</span></div>
+          <input type="range" class="vas-slider" id="nprsSlider" min="0" max="10" value="0" step="1" oninput="updateNPRS('nprsSlider','nprsValue','nprsDesc')">
           <div class="vas-value" id="nprsValue">0</div>
           <div class="vas-description" id="nprsDesc">No pain</div>
         </div>
       </div>
-
       <div class="intake-nav">
         <button class="intake-back" onclick="intakeBack()">Back</button>
         <button class="intake-next" onclick="intakeNext()">Next</button>
@@ -1110,18 +1145,14 @@ html, body {
     <div class="intake-step" id="intakeStep2">
       <h2>Functional Assessment</h2>
       <p>Lower Extremity Functional Scale (LEFS)</p>
-
       <div class="lefs-intro">
         We are interested in knowing whether you are having any difficulty with the activities listed below because of your lower limb problem. Please provide an answer for each activity. <strong>Today, do you or would you have any difficulty at all with:</strong>
       </div>
-
       <div id="lefsItems"></div>
-
       <div class="lefs-score-display" id="lefsScoreDisplay" style="display:none">
         <div class="score-num" id="lefsScoreNum">0</div>
         <div class="score-label">out of 80</div>
       </div>
-
       <div class="intake-nav">
         <button class="intake-back" onclick="intakeBack()">Back</button>
         <button class="intake-next" id="intakeSubmitBtn" onclick="submitIntake()">Submit &amp; Begin</button>
@@ -1138,12 +1169,10 @@ html, body {
       <h1>Welcome to Knee Recovery</h1>
       <p>A 6-week progressive exercise program designed to help you safely strengthen and rehabilitate your knee.</p>
     </div>
-
     <div class="instructions-section">
       <h2><span class="section-icon">📋</span> How the Program Works</h2>
       <p>Each week, you'll be given a set of exercises to complete daily. At the end of each week, you'll answer a few short questions about how your knee feels. If you're ready, you'll move on to more challenging exercises. If not, you'll repeat the current week — and that's completely fine. Everyone recovers at their own pace.</p>
     </div>
-
     <div class="instructions-section">
       <h2><span class="section-icon">🎒</span> What You'll Need</h2>
       <ul class="instructions-list">
@@ -1153,7 +1182,6 @@ html, body {
         <li>Comfortable clothing that allows free movement</li>
       </ul>
     </div>
-
     <div class="instructions-section">
       <h2><span class="section-icon">✅</span> Before You Begin</h2>
       <ul class="instructions-list">
@@ -1163,7 +1191,6 @@ html, body {
         <li>Do not rush through the exercises — focus on control and form</li>
       </ul>
     </div>
-
     <div class="instructions-section">
       <h2><span class="section-icon">🛑</span> When to Stop</h2>
       <div class="warning-box">
@@ -1176,46 +1203,51 @@ html, body {
         </ul>
       </div>
     </div>
-
     <div class="instructions-section">
       <div class="disclaimer-box">
         <p>⚠️ This program is not a substitute for professional medical advice. If you have any concerns about your condition, please speak with your physiotherapist or doctor before continuing.</p>
       </div>
     </div>
-
     <div class="instructions-section">
       <h2><span class="section-icon">🔒</span> Your Privacy</h2>
       <p>This app collects anonymized, non-identifiable data (such as age range, pain scores, and exercise completion rates) to help improve the program. No personal information such as your name or contact details is ever transmitted. All identifiable data stays on your device only. By using this app, you acknowledge this data collection.</p>
     </div>
-
     <button class="welcome-start-btn" id="welcomeStartBtn" onclick="dismissWelcome()">Get Started</button>
   </div>
 </div>
 
-<!-- Assessment Overlay (full page, scrollable) -->
+<!-- Assessment Overlay -->
 <div class="welcome-overlay" id="assessmentOverlay">
   <div class="welcome-content">
     <h2 style="font-family:'Fraunces',serif; font-size:22px; margin-bottom:6px;">Weekly Check-in</h2>
     <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">Answer these questions to determine if you're ready to progress.</p>
-
     <div id="assessmentQuestions"></div>
 
-    <!-- NPRS section (always shown) -->
+    <!-- NPRS -->
     <div class="instructions-section" style="margin-top:20px;">
       <h2><span class="section-icon">📊</span> Current Pain Level</h2>
       <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">Rate your current knee pain on a scale of 0 to 10.</p>
       <div class="vas-container">
-        <div class="vas-labels">
-          <span>No Pain</span>
-          <span>Worst Possible Pain</span>
-        </div>
-        <input type="range" class="vas-slider" id="assessNprsSlider" min="0" max="10" value="0" step="1" oninput="updateAssessNPRS()">
+        <div class="vas-labels"><span>No Pain</span><span>Worst Possible Pain</span></div>
+        <input type="range" class="vas-slider" id="assessNprsSlider" min="0" max="10" value="0" step="1" oninput="updateNPRS('assessNprsSlider','assessNprsValue','assessNprsDesc')">
         <div class="vas-value" id="assessNprsValue">0</div>
         <div class="vas-description" id="assessNprsDesc">No pain</div>
       </div>
     </div>
 
-    <!-- LEFS section (shown at weeks 3 and 6 only) -->
+    <!-- Difficulty Rating -->
+    <div class="instructions-section" style="margin-top:20px;">
+      <h2><span class="section-icon">💪</span> Exercise Difficulty</h2>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">How difficult did you find this week's exercises overall?</p>
+      <div class="vas-container">
+        <div class="vas-labels"><span>No Effort</span><span>Maximum Effort</span></div>
+        <input type="range" class="vas-slider" id="difficultySlider" min="0" max="10" value="5" step="1" oninput="updateDifficulty()">
+        <div class="vas-value" id="difficultyValue">5</div>
+        <div class="vas-description" id="difficultyDesc">Moderate</div>
+      </div>
+    </div>
+
+    <!-- LEFS (weeks 3 and 6) -->
     <div id="assessLefsSection" style="display:none; margin-top:20px;">
       <div class="instructions-section">
         <h2><span class="section-icon">📋</span> Functional Assessment (LEFS)</h2>
@@ -1228,6 +1260,15 @@ html, body {
       <div class="lefs-score-display" id="assessLefsScoreDisplay" style="display:none">
         <div class="score-num" id="assessLefsScoreNum">0</div>
         <div class="score-label">out of 80</div>
+      </div>
+    </div>
+
+    <!-- Inconsistency Warning (hidden by default) -->
+    <div class="inconsistency-box" id="inconsistencyBox" style="display:none">
+      <p id="inconsistencyMsg"></p>
+      <div class="inconsistency-btns">
+        <button class="intake-back" onclick="reviewAnswers()">Review Answers</button>
+        <button class="intake-next" onclick="keepAnswers()">Keep My Answers</button>
       </div>
     </div>
 
@@ -1249,8 +1290,8 @@ const CONFIG = {
   daysPerWeek: 7,
   tiers: {
     supported: {
-      name: "Tier 1 — Supported",
-      description: "Gentle exercises with more guidance",
+      name: "Tier 1 \u2014 Supported",
+      description: "Gentle exercises with more guidance and shorter sessions.",
       weeks: {
         1: { name: "Week 1", exercises: [{ id: "s1e1", name: "Coming soon", video: "" }] },
         2: { name: "Week 2", exercises: [{ id: "s2e1", name: "Coming soon", video: "" }] },
@@ -1261,8 +1302,8 @@ const CONFIG = {
       }
     },
     progressive: {
-      name: "Tier 2 — Progressive",
-      description: "Structured progressive program",
+      name: "Tier 2 \u2014 Progressive",
+      description: "Structured progressive program with moderate challenge.",
       weeks: {
         1: { name: "Week 1 \u2014 Foundation", exercises: [
           { id: "w1e1", name: "Static Quads", video: "videos/001-04-Isometric_Quads_L_1-1.mp4" },
@@ -1300,8 +1341,8 @@ const CONFIG = {
       }
     },
     performance: {
-      name: "Tier 3 — Performance",
-      description: "Higher intensity, performance-oriented",
+      name: "Tier 3 \u2014 Performance",
+      description: "Higher intensity, performance-oriented goals.",
       weeks: {
         1: { name: "Week 1", exercises: [{ id: "p1e1", name: "Coming soon", video: "" }] },
         2: { name: "Week 2", exercises: [{ id: "p2e1", name: "Coming soon", video: "" }] },
@@ -1320,28 +1361,15 @@ const CONFIG = {
   ]
 };
 
-// ─── Triage Logic ───
+// ─── Triage ───
 function determineTier(lefsScore, nprsScore) {
   if (lefsScore <= 34 || nprsScore >= 7) return 'supported';
   if (lefsScore >= 60 && nprsScore <= 3) return 'performance';
   return 'progressive';
 }
 
-function checkTierTransition(currentTier, lefsScore, nprsScore, prevLefs, prevNprs) {
-  if (prevLefs !== null && prevNprs !== null) {
-    if ((prevLefs - lefsScore) >= 9 && (nprsScore - prevNprs) >= 2) {
-      if (currentTier === 'performance') return 'progressive';
-      if (currentTier === 'progressive') return 'supported';
-    }
-  }
-  if (currentTier === 'supported' && lefsScore >= 35 && nprsScore <= 6) return 'progressive';
-  if (currentTier === 'progressive' && lefsScore >= 60 && nprsScore <= 3) return 'performance';
-  return currentTier;
-}
-
 function getTierWeeks() {
-  const tier = state.tier || 'progressive';
-  return CONFIG.tiers[tier]?.weeks || {};
+  return CONFIG.tiers[state.tier || 'progressive']?.weeks || {};
 }
 
 // ─── State ───
@@ -1351,7 +1379,7 @@ function getDefaultState() {
   return {
     currentWeek: 1,
     selectedDay: 1,
-    tier: null,         // 'supported', 'progressive', or 'performance'
+    tier: null,
     completions: {},
     assessments: {},
     weekStartDates: { 1: new Date().toISOString() }
@@ -1404,15 +1432,13 @@ function toggleExercise(week, day, exerciseId) {
   if (!state.completions[key]) {
     state.completions[key] = { exercises: [], completedAt: null };
   }
-  const idx = state.completions[key].exercises.indexOf(exerciseId);
   const wasDone = isDayCompleted(week, day);
-  
+  const idx = state.completions[key].exercises.indexOf(exerciseId);
   if (idx >= 0) {
     state.completions[key].exercises.splice(idx, 1);
     state.completions[key].completedAt = null;
   } else {
     state.completions[key].exercises.push(exerciseId);
-    // Check if all exercises are done
     const weekExercises = getTierWeeks()[week]?.exercises || [];
     if (weekExercises.every(ex => state.completions[key].exercises.includes(ex.id))) {
       state.completions[key].completedAt = new Date().toISOString();
@@ -1420,11 +1446,8 @@ function toggleExercise(week, day, exerciseId) {
   }
   saveState();
   render();
-  
-  // Show congratulatory toast if day just became complete
   const isNowDone = isDayCompleted(week, day);
   if (!wasDone && isNowDone) {
-    // Send completion data to Google Sheets
     const weekExercises = getTierWeeks()[week]?.exercises || [];
     sendCompletionData(week, day, weekExercises.length, weekExercises.length);
     showDayToast(week, day);
@@ -1442,22 +1465,17 @@ function showDayToast(week, day) {
     { title: "Brilliant! 🎯", msg: "Every session counts. You should be proud." },
     { title: "Way to go! 🏆", msg: "You're building a great habit." }
   ];
-  
   let msg;
   if (completedDays === 7) {
     msg = { title: "Week Complete! 🎉", msg: "All 7 days done! Time for your weekly check-in." };
   } else {
     msg = messages[Math.floor(Math.random() * messages.length)];
   }
-  
   const toast = document.getElementById('dayToast');
   document.getElementById('dayToastTitle').textContent = msg.title;
   document.getElementById('dayToastMsg').textContent = msg.msg;
   toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 function getCompletedDaysInWeek(week) {
@@ -1479,9 +1497,7 @@ function canTakeAssessment(week) {
 function getOverallProgress() {
   let totalDays = CONFIG.totalWeeks * CONFIG.daysPerWeek;
   let completedDays = 0;
-  for (let w = 1; w <= CONFIG.totalWeeks; w++) {
-    completedDays += getCompletedDaysInWeek(w);
-  }
+  for (let w = 1; w <= CONFIG.totalWeeks; w++) completedDays += getCompletedDaysInWeek(w);
   return Math.round((completedDays / totalDays) * 100);
 }
 
@@ -1490,75 +1506,56 @@ function isProgramComplete() {
     (state.currentWeek === CONFIG.totalWeeks && state.assessments[CONFIG.totalWeeks]?.passed);
 }
 
-// ─── Render ───
-function render() {
-  renderProgress();
-  renderWeekChips();
-  renderContent();
+function getPreviousNPRS() {
+  // Get NPRS from last assessment, or from intake
+  for (let w = state.currentWeek - 1; w >= 1; w--) {
+    if (state.assessments[w]?.nprs !== undefined) return state.assessments[w].nprs;
+  }
+  try {
+    const intake = JSON.parse(localStorage.getItem('kneeRehabIntake') || '{}');
+    return intake.nprs !== undefined ? intake.nprs : null;
+  } catch(e) { return null; }
 }
 
-function renderProgress() {
+// ─── Render ───
+function render() {
   const pct = getOverallProgress();
   document.getElementById('progressPct').textContent = pct + '%';
   document.getElementById('progressFill').style.width = pct + '%';
-  
+  const tierInfo = CONFIG.tiers[state.tier];
   if (isProgramComplete()) {
     document.getElementById('headerSub').textContent = 'Program Complete!';
   } else {
-    const tierName = CONFIG.tiers[state.tier]?.name || '';
-    document.getElementById('headerSub').textContent = `Week ${state.currentWeek} of ${CONFIG.totalWeeks} • ${tierName}`;
+    document.getElementById('headerSub').innerHTML = `Week ${state.currentWeek} of ${CONFIG.totalWeeks}` +
+      (tierInfo ? ` <span class="tier-badge ${state.tier}">${tierInfo.name}</span>` : '');
   }
-}
 
-function renderWeekChips() {
-  const container = document.getElementById('weekChips');
-  container.innerHTML = '';
-  
+  // Week chips
+  const chipContainer = document.getElementById('weekChips');
+  chipContainer.innerHTML = '';
   for (let w = 1; w <= CONFIG.totalWeeks; w++) {
     const chip = document.createElement('div');
     chip.className = 'week-chip';
     chip.textContent = `Wk ${w}`;
-    
-    if (state.assessments[w]?.passed) {
-      chip.classList.add('completed');
-    } else if (w === state.currentWeek) {
-      chip.classList.add('current');
-    } else if (w > state.currentWeek) {
-      chip.classList.add('locked');
-    }
-    
-    container.appendChild(chip);
+    if (state.assessments[w]?.passed) chip.classList.add('completed');
+    else if (w === state.currentWeek) chip.classList.add('current');
+    else if (w > state.currentWeek) chip.classList.add('locked');
+    chipContainer.appendChild(chip);
   }
-}
 
-function renderContent() {
+  // Content
   const container = document.getElementById('mainContent');
-  
   if (isProgramComplete()) {
-    container.innerHTML = `
-      <div class="completion-screen">
-        <div class="result-icon advance">🎉</div>
-        <h2>Congratulations!</h2>
-        <p>You've completed the full 6-week knee recovery program. Keep up the great work and continue listening to your body.</p>
-      </div>
-    `;
+    container.innerHTML = '<div class="completion-screen"><div class="result-icon advance">🎉</div><h2>Congratulations!</h2><p>You\'ve completed the full 6-week knee recovery program.</p></div>';
     return;
   }
-  
   const week = state.currentWeek;
   const weekData = getTierWeeks()[week];
-  
   if (!weekData) {
-    container.innerHTML = '<div class="empty-state"><p>No exercises configured for this week.</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>No exercises configured for this week yet.</p></div>';
     return;
   }
-  
-  let html = '';
-  
-  // Section title
-  html += `<div class="section-title">${weekData.name}</div>`;
-  
-  // Day selector
+  let html = `<div class="section-title">${weekData.name}</div>`;
   html += '<div class="day-grid">';
   for (let d = 1; d <= CONFIG.daysPerWeek; d++) {
     const done = isDayCompleted(week, d);
@@ -1569,90 +1566,69 @@ function renderContent() {
     html += `<button class="${cls}" onclick="selectDay(${d})">D${d}</button>`;
   }
   html += '</div>';
-  
-  // Assessment banner
   if (canTakeAssessment(week)) {
-    const lefsNote = isLefsWeek(week) ? ' This week includes a functional assessment (LEFS).' : '';
-    html += `
-      <div class="assessment-banner" onclick="openAssessment()">
-        <h3>🎯 Week Complete!</h3>
-        <p>Take your weekly check-in to see if you can advance.${lefsNote}</p>
-      </div>
-    `;
+    const lefsNote = [3,6].includes(week) ? ' This week includes a functional assessment (LEFS).' : '';
+    html += `<div class="assessment-banner" onclick="openAssessment()"><h3>🎯 Week Complete!</h3><p>Take your weekly check-in to see if you can advance.${lefsNote}</p></div>`;
   }
-  
-  // Exercises
-  const exercises = weekData.exercises;
-  exercises.forEach((ex, i) => {
+  weekData.exercises.forEach((ex, i) => {
     const checked = isExerciseCompleted(week, state.selectedDay, ex.id);
-    html += `
-      <div class="exercise-card">
-        ${ex.video ? `<video class="exercise-video" src="${ex.video}" controls playsinline preload="metadata"></video>` : ''}
-        <div class="exercise-info">
-          <div>
-            <div class="exercise-name">${ex.name}</div>
-            <div class="exercise-number">Exercise ${i + 1} of ${exercises.length}</div>
-          </div>
-          <button class="check-btn ${checked ? 'checked' : ''}" onclick="toggleExercise(${week}, ${state.selectedDay}, '${ex.id}')">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </button>
-        </div>
-      </div>
-    `;
+    html += `<div class="exercise-card">${ex.video ? `<video class="exercise-video" src="${ex.video}" controls playsinline preload="metadata"></video>` : ''}<div class="exercise-info"><div><div class="exercise-name">${ex.name}</div><div class="exercise-number">Exercise ${i+1} of ${weekData.exercises.length}</div></div><button class="check-btn ${checked?'checked':''}" onclick="toggleExercise(${week},${state.selectedDay},'${ex.id}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div></div>`;
   });
-  
   container.innerHTML = html;
 }
 
-function selectDay(d) {
-  state.selectedDay = d;
-  saveState();
-  render();
+function selectDay(d) { state.selectedDay = d; saveState(); render(); }
+
+// ─── NPRS & Difficulty Helpers ───
+function updateNPRS(sliderId, valueId, descId) {
+  const val = parseInt(document.getElementById(sliderId).value);
+  document.getElementById(valueId).textContent = val;
+  let desc = 'No pain';
+  if (val >= 1 && val <= 3) desc = 'Mild pain';
+  else if (val >= 4 && val <= 6) desc = 'Moderate pain';
+  else if (val >= 7) desc = 'Severe pain';
+  document.getElementById(descId).textContent = desc;
+}
+
+function updateDifficulty() {
+  const val = parseInt(document.getElementById('difficultySlider').value);
+  document.getElementById('difficultyValue').textContent = val;
+  let desc = 'No effort';
+  if (val >= 1 && val <= 3) desc = 'Easy';
+  else if (val >= 4 && val <= 6) desc = 'Moderate';
+  else if (val >= 7 && val <= 9) desc = 'Hard';
+  else if (val === 10) desc = 'Maximum effort';
+  document.getElementById('difficultyDesc').textContent = desc;
 }
 
 // ─── Assessment ───
 let assessmentAnswers = {};
 let assessLefsAnswers = {};
-const LEFS_WEEKS = [3, 6]; // Weeks where LEFS is administered
-
-function isLefsWeek(week) {
-  return LEFS_WEEKS.includes(week);
-}
+let assessmentInconsistencyHandled = false;
 
 function openAssessment() {
   assessmentAnswers = {};
   assessLefsAnswers = {};
+  assessmentInconsistencyHandled = false;
   const week = state.currentWeek;
   const container = document.getElementById('assessmentQuestions');
-  
   let html = '';
   CONFIG.assessmentQuestions.forEach((q, i) => {
-    html += `
-      <div class="question-block">
-        <div class="question-text">${i + 1}. ${q.text}</div>
-        <div class="answer-btns">
-          <button class="answer-btn" id="q${i}-yes" onclick="answerQuestion(${i}, 'yes')">Yes</button>
-          <button class="answer-btn" id="q${i}-no" onclick="answerQuestion(${i}, 'no')">No</button>
-        </div>
-      </div>
-    `;
+    html += `<div class="question-block"><div class="question-text">${i+1}. ${q.text}</div><div class="answer-btns"><button class="answer-btn" id="q${i}-yes" onclick="answerQuestion(${i},'yes')">Yes</button><button class="answer-btn" id="q${i}-no" onclick="answerQuestion(${i},'no')">No</button></div></div>`;
   });
   container.innerHTML = html;
-  
-  // Reset VAS
   document.getElementById('assessNprsSlider').value = 0;
   document.getElementById('assessNprsValue').textContent = '0';
   document.getElementById('assessNprsDesc').textContent = 'No pain';
-  
-  // Show/hide LEFS section
+  document.getElementById('difficultySlider').value = 5;
+  document.getElementById('difficultyValue').textContent = '5';
+  document.getElementById('difficultyDesc').textContent = 'Moderate';
+  document.getElementById('inconsistencyBox').style.display = 'none';
+
   const lefsSection = document.getElementById('assessLefsSection');
-  if (isLefsWeek(week)) {
-    lefsSection.style.display = 'block';
-    buildAssessLEFS();
-  } else {
-    lefsSection.style.display = 'none';
-  }
-  
+  if ([3,6].includes(week)) { lefsSection.style.display = 'block'; buildAssessLEFS(); }
+  else { lefsSection.style.display = 'none'; }
+
   document.getElementById('submitAssessment').disabled = true;
   document.getElementById('assessmentOverlay').classList.add('show');
   document.getElementById('assessmentOverlay').scrollTop = 0;
@@ -1662,16 +1638,7 @@ function buildAssessLEFS() {
   const container = document.getElementById('assessLefsItems');
   let html = '';
   LEFS_ITEMS.forEach((item, i) => {
-    html += `
-      <div class="lefs-item">
-        <div class="lefs-item-text"><span class="lefs-item-num">${i + 1}.</span> ${item}</div>
-        <div class="lefs-options">
-          ${LEFS_OPTIONS.map(opt => `
-            <button class="lefs-opt" id="assess-lefs-${i}-${opt.value}" onclick="selectAssessLEFS(${i}, ${opt.value})">${opt.label}</button>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    html += `<div class="lefs-item"><div class="lefs-item-text"><span class="lefs-item-num">${i+1}.</span> ${item}</div><div class="lefs-options">${LEFS_OPTIONS.map(opt => `<button class="lefs-opt" id="assess-lefs-${i}-${opt.value}" onclick="selectAssessLEFS(${i},${opt.value})">${opt.label}</button>`).join('')}</div></div>`;
   });
   container.innerHTML = html;
   document.getElementById('assessLefsScoreDisplay').style.display = 'none';
@@ -1680,207 +1647,140 @@ function buildAssessLEFS() {
 function selectAssessLEFS(itemIndex, value) {
   assessLefsAnswers[itemIndex] = value;
   LEFS_OPTIONS.forEach(opt => {
-    const btn = document.getElementById(`assess-lefs-${itemIndex}-${opt.value}`);
-    btn.className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
+    document.getElementById(`assess-lefs-${itemIndex}-${opt.value}`).className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
   });
-  // Update score
-  const total = Object.values(assessLefsAnswers).reduce((a, b) => a + b, 0);
+  const total = Object.values(assessLefsAnswers).reduce((a,b)=>a+b,0);
   document.getElementById('assessLefsScoreNum').textContent = total;
   document.getElementById('assessLefsScoreDisplay').style.display = 'block';
-  // Check submit readiness
   checkAssessmentReady();
-}
-
-function updateAssessNPRS() {
-  const val = parseInt(document.getElementById('assessNprsSlider').value);
-  document.getElementById('assessNprsValue').textContent = val;
-  let desc = 'No pain';
-  if (val >= 1 && val <= 3) desc = 'Mild pain';
-  else if (val >= 4 && val <= 6) desc = 'Moderate pain';
-  else if (val >= 7 && val <= 10) desc = 'Severe pain';
-  document.getElementById('assessNprsDesc').textContent = desc;
 }
 
 function answerQuestion(index, answer) {
   assessmentAnswers[index] = answer;
-  
-  // Update button styles
-  const yesBtn = document.getElementById(`q${index}-yes`);
-  const noBtn = document.getElementById(`q${index}-no`);
-  yesBtn.className = 'answer-btn' + (answer === 'yes' ? ' selected-yes' : '');
-  noBtn.className = 'answer-btn' + (answer === 'no' ? ' selected-no' : '');
-  
+  document.getElementById(`q${index}-yes`).className = 'answer-btn' + (answer === 'yes' ? ' selected-yes' : '');
+  document.getElementById(`q${index}-no`).className = 'answer-btn' + (answer === 'no' ? ' selected-no' : '');
   checkAssessmentReady();
 }
 
 function checkAssessmentReady() {
   const week = state.currentWeek;
-  const allQuestionsAnswered = CONFIG.assessmentQuestions.every((_, i) => assessmentAnswers[i] !== undefined);
-  
-  let lefsComplete = true;
-  if (isLefsWeek(week)) {
-    lefsComplete = Object.keys(assessLefsAnswers).length === 20;
-  }
-  
-  document.getElementById('submitAssessment').disabled = !(allQuestionsAnswered && lefsComplete);
+  const allQ = CONFIG.assessmentQuestions.every((_, i) => assessmentAnswers[i] !== undefined);
+  let lefsOk = true;
+  if ([3,6].includes(week)) lefsOk = Object.keys(assessLefsAnswers).length === 20;
+  document.getElementById('submitAssessment').disabled = !(allQ && lefsOk);
+}
+
+function checkInconsistencies() {
+  const nprs = parseInt(document.getElementById('assessNprsSlider').value);
+  const prevNprs = getPreviousNPRS();
+  const nprsWorsened = prevNprs !== null && nprs > prevNprs;
+  const q1NoPain = assessmentAnswers[0] === 'yes';
+  const q2NotWorse = assessmentAnswers[1] === 'no';
+  const q4ReadyProgress = assessmentAnswers[3] === 'yes';
+  const difficulty = parseInt(document.getElementById('difficultySlider').value);
+
+  let issues = [];
+  if (q1NoPain && nprs >= 5) issues.push('You indicated no knee pain, but your pain rating is ' + nprs + '/10.');
+  if (q2NotWorse && nprsWorsened && (nprs - prevNprs) >= 2) issues.push('You indicated pain did not worsen, but your pain score increased from ' + prevNprs + ' to ' + nprs + '.');
+  if (q4ReadyProgress && difficulty >= 8) issues.push('You feel ready to progress, but rated the exercises as very difficult (' + difficulty + '/10).');
+  if (!q1NoPain && nprs <= 2) issues.push('You indicated knee pain was present, but your pain rating is only ' + nprs + '/10.');
+
+  return issues;
 }
 
 function submitAssessment() {
+  // Check for inconsistencies first
+  if (!assessmentInconsistencyHandled) {
+    const issues = checkInconsistencies();
+    if (issues.length > 0) {
+      document.getElementById('inconsistencyMsg').innerHTML = '<strong>We noticed some inconsistencies:</strong><br><br>' + issues.join('<br><br>') + '<br><br>Would you like to review your answers, or keep them as they are?';
+      document.getElementById('inconsistencyBox').style.display = 'block';
+      document.getElementById('inconsistencyBox').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+  }
+
   const week = state.currentWeek;
-  
-  // Check if all answers match advanceOn criteria
-  const passed = CONFIG.assessmentQuestions.every((q, i) => {
-    return assessmentAnswers[i] === q.advanceOn;
-  });
-  
+  const nprs = parseInt(document.getElementById('assessNprsSlider').value);
+  const difficulty = parseInt(document.getElementById('difficultySlider').value);
+  const prevNprs = getPreviousNPRS();
+  const nprsWorsened = prevNprs !== null && nprs > prevNprs;
+
+  // Yes/No questions check
+  const yesNoPassed = CONFIG.assessmentQuestions.every((q, i) => assessmentAnswers[i] === q.advanceOn);
+
+  // Difficulty + NPRS check
+  let diffNprsPassed = false;
+  if (difficulty <= 6 && !nprsWorsened) diffNprsPassed = true;
+
+  // Both must agree to advance (or if inconsistency handled, use conservative)
+  const passed = assessmentInconsistencyHandled ? false : (yesNoPassed && diffNprsPassed);
+
   const assessmentData = {
     passed: passed,
     answers: { ...assessmentAnswers },
-    nprs: parseInt(document.getElementById('assessNprsSlider').value),
+    nprs: nprs,
+    difficulty: difficulty,
+    prevNprs: prevNprs,
+    nprsWorsened: nprsWorsened,
+    yesNoPassed: yesNoPassed,
+    diffNprsPassed: diffNprsPassed,
     date: new Date().toISOString()
   };
-  
-  // Add LEFS data if it was a LEFS week
-  if (isLefsWeek(week)) {
+
+  if ([3,6].includes(week)) {
     assessmentData.lefs = { ...assessLefsAnswers };
-    assessmentData.lefsTotal = Object.values(assessLefsAnswers).reduce((a, b) => a + b, 0);
+    assessmentData.lefsTotal = Object.values(assessLefsAnswers).reduce((a,b)=>a+b,0);
   }
-  
+
   state.assessments[week] = assessmentData;
-  
-  // Send anonymized data to Google Sheets
-  sendAssessmentData(week, assessmentData);
-  
+
   if (passed && state.currentWeek < CONFIG.totalWeeks) {
     state.currentWeek += 1;
     state.selectedDay = 1;
     state.weekStartDates[state.currentWeek] = new Date().toISOString();
   } else if (passed && state.currentWeek === CONFIG.totalWeeks) {
-    // Program complete!
+    // Program complete
   } else {
-    // Repeat week: reset completions for this week
-    for (let d = 1; d <= CONFIG.daysPerWeek; d++) {
-      delete state.completions[getDayKey(week, d)];
-    }
+    for (let d = 1; d <= CONFIG.daysPerWeek; d++) delete state.completions[getDayKey(week, d)];
     delete state.assessments[week];
   }
-  
+
   saveState();
+  sendAssessmentData(week, assessmentData);
   document.getElementById('assessmentOverlay').classList.remove('show');
-  
-  // Show result
-  showResult(passed, week);
+  showResult(passed, week, difficulty, nprsWorsened);
 }
 
-function showResult(passed, week) {
+function reviewAnswers() {
+  document.getElementById('inconsistencyBox').style.display = 'none';
+  document.getElementById('assessmentOverlay').scrollTop = 0;
+}
+
+function keepAnswers() {
+  assessmentInconsistencyHandled = true;
+  document.getElementById('inconsistencyBox').style.display = 'none';
+  submitAssessment();
+}
+
+function showResult(passed, week, difficulty, nprsWorsened) {
   const container = document.getElementById('resultMessage');
-  
   if (passed && week === CONFIG.totalWeeks) {
-    container.innerHTML = `
-      <div class="result-icon advance">🎉</div>
-      <h3>Program Complete!</h3>
-      <p>Congratulations! You've successfully completed the entire 6-week knee recovery program.</p>
-      <button class="result-btn" onclick="closeResult()">Finish</button>
-    `;
+    container.innerHTML = '<div class="result-icon advance">🎉</div><h3>Program Complete!</h3><p>Congratulations! You\'ve successfully completed the entire 6-week program.</p><button class="result-btn" onclick="closeResult()">Finish</button>';
   } else if (passed) {
-    container.innerHTML = `
-      <div class="result-icon advance">🎉</div>
-      <h3>Great Progress!</h3>
-      <p>You're ready to move on to Week ${week + 1} with more challenging exercises.</p>
-      <button class="result-btn" onclick="closeResult()">Continue to Week ${week + 1}</button>
-    `;
+    container.innerHTML = `<div class="result-icon advance">🎉</div><h3>Great Progress!</h3><p>You're ready to move on to Week ${week+1} with more challenging exercises.</p><button class="result-btn" onclick="closeResult()">Continue to Week ${week+1}</button>`;
   } else {
-    container.innerHTML = `
-      <div class="result-icon repeat">💪</div>
-      <h3>Let's Keep Building</h3>
-      <p>Based on your answers, it's best to repeat Week ${week} to ensure a safe recovery. Listen to your body — there's no rush!</p>
-      <button class="result-btn" onclick="closeResult()">Repeat Week ${week}</button>
-    `;
+    let reason = 'Based on your answers, it\'s best to repeat this week to ensure a safe recovery.';
+    if (difficulty >= 7 && !nprsWorsened) reason = 'The exercises were quite challenging this week. Let\'s repeat to build more confidence before moving on.';
+    if (nprsWorsened) reason = 'Your pain levels have increased. Let\'s repeat this week at the same level to allow your body to adapt.';
+    container.innerHTML = `<div class="result-icon repeat">💪</div><h3>Let's Keep Building</h3><p>${reason} Listen to your body — there's no rush!</p><button class="result-btn" onclick="closeResult()">Repeat Week ${week}</button>`;
   }
-  
   document.getElementById('resultModal').classList.add('show');
 }
 
-function closeResult() {
-  document.getElementById('resultModal').classList.remove('show');
-  render();
-}
+function closeResult() { document.getElementById('resultModal').classList.remove('show'); render(); }
 
-// ─── Data Collection (Google Sheets Backend) ───
-// REPLACE THIS URL with your Google Apps Script web app URL
-const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyfxYaGJieExtXh7XtR-v4yKxVzJZfH4_02q5R7pU93Uhwg8_3nuxBm-LrqWFFcJ2lTcg/exec";
-
-function getUserId() {
-  let uid = localStorage.getItem('kneeRehabUserId');
-  if (!uid) {
-    uid = 'user_' + Math.random().toString(36).substr(2, 8);
-    localStorage.setItem('kneeRehabUserId', uid);
-  }
-  return uid;
-}
-
-function getAgeRange(age) {
-  age = parseInt(age);
-  if (!age || age < 1) return 'unknown';
-  if (age < 20) return 'under 20';
-  if (age < 30) return '20-29';
-  if (age < 40) return '30-39';
-  if (age < 50) return '40-49';
-  if (age < 60) return '50-59';
-  if (age < 70) return '60-69';
-  if (age < 80) return '70-79';
-  return '80+';
-}
-
-function sendToSheets(data) {
-  if (SHEETS_ENDPOINT === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") return; // Not configured yet
-  
-  try {
-    fetch(SHEETS_ENDPOINT, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).catch(() => {}); // Silently fail - don't disrupt the user experience
-  } catch(e) {}
-}
-
-function sendIntakeData(intakeData) {
-  sendToSheets({
-    type: 'intake',
-    userId: getUserId(),
-    ageRange: getAgeRange(intakeData.age),
-    nprs: intakeData.nprs,
-    lefsTotal: intakeData.lefsTotal,
-    painDuration: intakeData.painDuration
-  });
-}
-
-function sendAssessmentData(week, assessmentData) {
-  sendToSheets({
-    type: 'weekly_assessment',
-    userId: getUserId(),
-    week: week,
-    nprs: assessmentData.nprs,
-    lefsTotal: assessmentData.lefsTotal || null,
-    answers: assessmentData.answers,
-    passed: assessmentData.passed
-  });
-}
-
-function sendCompletionData(week, day, exercisesCompleted, totalExercises) {
-  sendToSheets({
-    type: 'completion',
-    userId: getUserId(),
-    week: week,
-    day: day,
-    exercisesCompleted: exercisesCompleted,
-    totalExercises: totalExercises,
-    completionRate: Math.round((exercisesCompleted / totalExercises) * 100) + '%'
-  });
-}
-
-// ─── Intake Questionnaire ───
+// ─── LEFS Data ───
 const LEFS_ITEMS = [
   "Any of your usual work, housework, or school activities",
   "Your usual hobbies, recreational or sporting activities",
@@ -1903,7 +1803,6 @@ const LEFS_ITEMS = [
   "Hopping",
   "Rolling over in bed"
 ];
-
 const LEFS_OPTIONS = [
   { label: "Unable", value: 0 },
   { label: "Extreme", value: 1 },
@@ -1912,52 +1811,35 @@ const LEFS_OPTIONS = [
   { label: "None", value: 4 }
 ];
 
+// ─── Intake ───
 let intakeStep = 0;
 let lefsAnswers = {};
 
 function checkIntakeNeeded() {
   const intake = localStorage.getItem('kneeRehabIntake');
-  if (!intake) {
-    buildLEFS();
-    showIntakeStep(0);
-    document.getElementById('intakeOverlay').classList.add('show');
-  }
+  if (!intake) { buildLEFS(); showIntakeStep(0); document.getElementById('intakeOverlay').classList.add('show'); }
 }
 
 function buildLEFS() {
   const container = document.getElementById('lefsItems');
   let html = '';
   LEFS_ITEMS.forEach((item, i) => {
-    html += `
-      <div class="lefs-item">
-        <div class="lefs-item-text"><span class="lefs-item-num">${i + 1}.</span> ${item}</div>
-        <div class="lefs-options">
-          ${LEFS_OPTIONS.map(opt => `
-            <button class="lefs-opt" id="lefs-${i}-${opt.value}" onclick="selectLEFS(${i}, ${opt.value})">${opt.label}</button>
-          `).join('')}
-        </div>
-      </div>
-    `;
+    html += `<div class="lefs-item"><div class="lefs-item-text"><span class="lefs-item-num">${i+1}.</span> ${item}</div><div class="lefs-options">${LEFS_OPTIONS.map(opt => `<button class="lefs-opt" id="lefs-${i}-${opt.value}" onclick="selectLEFS(${i},${opt.value})">${opt.label}</button>`).join('')}</div></div>`;
   });
   container.innerHTML = html;
 }
 
 function selectLEFS(itemIndex, value) {
   lefsAnswers[itemIndex] = value;
-  // Update button styles
   LEFS_OPTIONS.forEach(opt => {
-    const btn = document.getElementById(`lefs-${itemIndex}-${opt.value}`);
-    btn.className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
+    document.getElementById(`lefs-${itemIndex}-${opt.value}`).className = 'lefs-opt' + (opt.value === value ? ' selected' : '');
   });
-  // Show running score
   updateLEFSScore();
 }
 
 function updateLEFSScore() {
-  const answered = Object.keys(lefsAnswers).length;
-  if (answered > 0) {
-    const total = Object.values(lefsAnswers).reduce((a, b) => a + b, 0);
-    document.getElementById('lefsScoreNum').textContent = total;
+  if (Object.keys(lefsAnswers).length > 0) {
+    document.getElementById('lefsScoreNum').textContent = Object.values(lefsAnswers).reduce((a,b)=>a+b,0);
     document.getElementById('lefsScoreDisplay').style.display = 'block';
   }
 }
@@ -1965,41 +1847,18 @@ function updateLEFSScore() {
 function showIntakeStep(step) {
   intakeStep = step;
   for (let i = 0; i < 3; i++) {
-    const stepEl = document.getElementById(`intakeStep${i}`);
-    const dotEl = document.getElementById(`dot${i}`);
-    stepEl.className = 'intake-step' + (i === step ? ' active' : '');
-    dotEl.className = 'intake-step-dot' + (i < step ? ' done' : '') + (i === step ? ' active' : '');
+    document.getElementById(`intakeStep${i}`).className = 'intake-step' + (i === step ? ' active' : '');
+    document.getElementById(`dot${i}`).className = 'intake-step-dot' + (i < step ? ' done' : '') + (i === step ? ' active' : '');
   }
-  // Scroll to top
   document.getElementById('intakeOverlay').scrollTop = 0;
 }
 
-function intakeNext() {
-  if (intakeStep < 2) {
-    showIntakeStep(intakeStep + 1);
-  }
-}
-
-function intakeBack() {
-  if (intakeStep > 0) {
-    showIntakeStep(intakeStep - 1);
-  }
-}
-
-function updateNPRS() {
-  const val = parseInt(document.getElementById('nprsSlider').value);
-  document.getElementById('nprsValue').textContent = val;
-  let desc = 'No pain';
-  if (val >= 1 && val <= 3) desc = 'Mild pain';
-  else if (val >= 4 && val <= 6) desc = 'Moderate pain';
-  else if (val >= 7 && val <= 10) desc = 'Severe pain';
-  document.getElementById('nprsDesc').textContent = desc;
-}
+function intakeNext() { if (intakeStep < 2) showIntakeStep(intakeStep + 1); }
+function intakeBack() { if (intakeStep > 0) showIntakeStep(intakeStep - 1); }
 
 function submitIntake() {
-  const lefsTotal = Object.keys(lefsAnswers).length > 0 ? Object.values(lefsAnswers).reduce((a, b) => a + b, 0) : null;
+  const lefsTotal = Object.keys(lefsAnswers).length > 0 ? Object.values(lefsAnswers).reduce((a,b)=>a+b,0) : null;
   const nprsScore = parseInt(document.getElementById('nprsSlider').value);
-  
   const intakeData = {
     name: document.getElementById('intakeName').value.trim(),
     age: document.getElementById('intakeAge').value,
@@ -2011,55 +1870,74 @@ function submitIntake() {
     lefsTotal: lefsTotal,
     submittedAt: new Date().toISOString()
   };
-  
-  // Determine tier based on LEFS and NPRS
   if (lefsTotal !== null) {
     const tier = determineTier(lefsTotal, nprsScore);
     intakeData.tier = tier;
     state.tier = tier;
     saveState();
   }
-  
   localStorage.setItem('kneeRehabIntake', JSON.stringify(intakeData));
-  
-  // Send anonymized data to Google Sheets
   sendIntakeData(intakeData);
-  
-  // Show tier assignment result
-  showTierResult(state.tier);
   document.getElementById('intakeOverlay').classList.remove('show');
+  // Show tier result
+  const tierInfo = CONFIG.tiers[state.tier];
+  if (tierInfo) {
+    const container = document.getElementById('resultMessage');
+    container.innerHTML = `<div class="result-icon advance">📋</div><h3>Your Program: ${tierInfo.name}</h3><p>${tierInfo.description}</p><p style="margin-top:8px;font-size:13px;color:var(--text-muted);">This was determined by your pain and functional scores.</p><button class="result-btn" onclick="closeResult()">Begin Program</button>`;
+    document.getElementById('resultModal').classList.add('show');
+  }
 }
 
+// ─── Data Collection ───
+const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyfxYaGJieExtXh7XtR-v4yKxVzJZfH4_02q5R7pU93Uhwg8_3nuxBm-LrqWFFcJ2lTcg/exec";
 
-function showTierResult(tier) {
-  const tierInfo = CONFIG.tiers[tier];
-  if (!tierInfo) return;
-  const container = document.getElementById('resultMessage');
-  container.innerHTML = `
-    <div class="result-icon advance">📋</div>
-    <h3>Your Program: ${tierInfo.name}</h3>
-    <p>${tierInfo.description}</p>
-    <p style="margin-top:8px; font-size:13px; color:var(--text-muted);">This was determined by your pain and functional scores. Your tier may change as you progress.</p>
-    <button class="result-btn" onclick="closeResult()">Begin Program</button>
-  `;
-  document.getElementById('resultModal').classList.add('show');
+function getUserId() {
+  let uid = localStorage.getItem('kneeRehabUserId');
+  if (!uid) { uid = 'user_' + Math.random().toString(36).substr(2, 8); localStorage.setItem('kneeRehabUserId', uid); }
+  return uid;
+}
+
+function getAgeRange(age) {
+  age = parseInt(age);
+  if (!age) return 'unknown';
+  if (age < 20) return 'under 20';
+  if (age < 30) return '20-29';
+  if (age < 40) return '30-39';
+  if (age < 50) return '40-49';
+  if (age < 60) return '50-59';
+  if (age < 70) return '60-69';
+  if (age < 80) return '70-79';
+  return '80+';
+}
+
+function sendToSheets(data) {
+  try {
+    fetch(SHEETS_ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
+  } catch(e) {}
+}
+
+function sendIntakeData(d) {
+  sendToSheets({ type: 'intake', userId: getUserId(), ageRange: getAgeRange(d.age), nprs: d.nprs, lefsTotal: d.lefsTotal, painDuration: d.painDuration, tier: d.tier || 'unknown' });
+}
+
+function sendAssessmentData(week, d) {
+  sendToSheets({ type: 'weekly_assessment', userId: getUserId(), week: week, nprs: d.nprs, difficulty: d.difficulty, lefsTotal: d.lefsTotal || null, answers: d.answers, passed: d.passed, tier: state.tier });
+}
+
+function sendCompletionData(week, day, done, total) {
+  sendToSheets({ type: 'completion', userId: getUserId(), week: week, day: day, exercisesCompleted: done, totalExercises: total, completionRate: Math.round((done/total)*100) + '%', tier: state.tier });
 }
 
 // ─── Welcome / Instructions ───
 function checkFirstLaunch() {
   const seen = localStorage.getItem('kneeRehabWelcomeSeen');
-  if (!seen) {
-    document.getElementById('welcomeOverlay').classList.add('show');
-  } else {
-    // Welcome already seen, but check if intake still needed
-    checkIntakeNeeded();
-  }
+  if (!seen) { document.getElementById('welcomeOverlay').classList.add('show'); }
+  else { checkIntakeNeeded(); }
 }
 
 function dismissWelcome() {
   localStorage.setItem('kneeRehabWelcomeSeen', 'true');
   document.getElementById('welcomeOverlay').classList.remove('show');
-  // After dismissing welcome, check if intake is needed
   checkIntakeNeeded();
 }
 
@@ -2070,28 +1948,19 @@ function showInstructions() {
 
 // ─── Notifications ───
 async function requestNotificationPermission() {
-  if ('Notification' in window && Notification.permission === 'default') {
-    await Notification.requestPermission();
-  }
+  if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
 }
 
-// ─── PWA Registration ───
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+// ─── PWA ───
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 // ─── Init ───
-// Load tier from intake if not in state
 if (!state.tier) {
   try {
     const intake = JSON.parse(localStorage.getItem('kneeRehabIntake') || '{}');
-    if (intake.tier) {
-      state.tier = intake.tier;
-      saveState();
-    } else {
-      state.tier = 'progressive'; // default
-    }
+    state.tier = intake.tier || 'progressive';
   } catch(e) { state.tier = 'progressive'; }
+  saveState();
 }
 requestNotificationPermission();
 checkFirstLaunch();
